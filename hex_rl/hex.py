@@ -4,23 +4,29 @@ from rich.console import Console
 
 
 class TerminatedError(Exception):
-    def __init__(self, winner: int) -> None:
-        super().__init__(f"Game already terminated, the winner is {winner}")
+    def __init__(self, winner: int, rich: bool = False) -> None:
+        if rich:
+            super().__init__(f"Game already terminated, the winner is {Hex.player_int_to_rich(winner)}")
+        else:
+            super().__init__(f"Game already terminated, the winner is {Hex.player_int_to_char(winner)}")
     
 
 class InvalidActionError(Exception):
-    def __init__(self, action: tuple[int, int], player: int) -> None:
-        super().__init__(f"Invalid action at cell {action}, played by {player}")
+    def __init__(self, action: tuple[int, int], player: int, rich: bool = False) -> None:
+        if rich:
+            super().__init__(f"Invalid action at cell [bold]{action}[/bold], played by {Hex.player_int_to_rich(player)}")
+        else:
+            super().__init__(f"Invalid action at cell {action}, played by {Hex.player_int_to_char(player)}")
 
 
-class HexCore:
+class Hex:
     """
     Size: 2 to 20
     Players:
         1 (first / X / red) upper & lower edges
         -1 (second / O / blue) left & right edges
     """
-    def __init__(self, size: int = 11) -> None:
+    def __init__(self, size: int = 11, rich_exceptions: bool = False) -> None:
         assert 2 <= size <= 20, "Board size must be between 2 and 20"
 
         self.size = size
@@ -31,6 +37,8 @@ class HexCore:
         self._first_groups: list[set[tuple[int, int]]] = list()
         self._second_groups: list[set[tuple[int, int]]] = list()
 
+        self.rich_exceptions = rich_exceptions
+
 
     def init_board(self) -> np.ndarray:
         return np.zeros((self.size, self.size), dtype=int)
@@ -38,10 +46,10 @@ class HexCore:
 
     def play(self, tup_action: tuple[int, int]) -> None:
         if self.winner is not None:
-            raise TerminatedError(self.winner)
+            raise TerminatedError(self.winner, rich=self.rich_exceptions)
 
         if not self.is_valid_action(tup_action):
-            raise InvalidActionError(tup_action, self.board[tup_action])
+            raise InvalidActionError(tup_action, self.board[tup_action], rich=self.rich_exceptions)
 
         self.board[tup_action] = self.turn
 
@@ -107,15 +115,15 @@ class HexCore:
 
     def get_rich_str(self) -> str:
         bold_dot = '[bold]\u22C5[/bold]'
+
         res = '    ' + '  '.join(f'{i:2d}' for i in range(self.size)) + '\n\n'
         res += '    ' + '[bold red]' + '-' * (self.size * 4 + 1) + '[/]' + '\n'
         for i in range(self.size):
             res += '  ' * i + f'{i:2d}   [bold blue]\\\[/]'
             for j in range(self.size):
-                if self.board[i, j] == 1:
-                    res += ' [bold red]X[/]  ' if j != self.size - 1 else ' [bold red]X[/] '
-                elif self.board[i, j] == -1:
-                    res += ' [bold blue]O[/]  ' if j != self.size - 1 else ' [bold blue]O[/] '
+                if self.board[i, j] in [-1, 1]:
+                    player_rich = self.player_int_to_rich(self.board[i, j])
+                    res += f' {player_rich}  ' if j != self.size - 1 else f' {player_rich} '
                 else:
                     res += f' {bold_dot}  ' if j != self.size - 1 else f' {bold_dot} '
             if i == self.size - 1:
@@ -142,11 +150,29 @@ class HexCore:
                 any(tup_action[1] == self.size - 1 for tup_action in group):
                 return -1
         return None
-        
+    
+
+    @staticmethod
+    def player_int_to_char(player: int) -> str:
+        return 'X' if player == 1 else 'O'
+    
+
+    def get_char_turn(self) -> str:
+        return self.player_int_to_char(self.turn)
+    
+
+    def get_char_winner(self) -> str:
+        return self.player_int_to_char(self.winner)
+    
+
+    @staticmethod
+    def player_int_to_rich(player: int) -> str:
+        return '[bold red]X[/bold red]' if player == 1 else '[bold blue]O[/bold blue]'
+    
 
 
 if __name__ == "__main__":
-    hex = HexCore(11)
+    hex = Hex(11)
     hex._print_groups()
     hex.rich_render()
     hex._print_groups()
@@ -167,7 +193,7 @@ if __name__ == "__main__":
     hex.rich_render()
     hex._print_groups()
     
-    # hex.play((1, 3))
+    hex.play((1, 3))  # InvalidActionError: Invalid action at cell (1, 3), played by O
     
     hex.play((0, 2))
     hex.play((0, 4))
@@ -210,9 +236,9 @@ if __name__ == "__main__":
     hex.rich_render()
     hex._print_groups()
 
-    # hex.play((9, 9))   # TerminatedError: Game already terminated, the winner is 1
+    # hex.play((9, 9))   # TerminatedError: Game already terminated, the winner is X
     
-    hex = HexCore(11)
+    hex = Hex(11)
     hex.play((0, 0))
     hex.play((1, 0))
     hex.play((0, 1))
@@ -238,5 +264,5 @@ if __name__ == "__main__":
 
     hex.rich_render()
 
-    hex.play((5, 5))   # TerminatedError: Game already terminated, the winner is -1
+    # hex.play((5, 5))   # TerminatedError: Game already terminated, the winner is -1
 
