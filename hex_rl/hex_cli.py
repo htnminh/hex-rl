@@ -32,7 +32,7 @@ def play_pvp(size: Annotated[int, typer.Option(help='Size of the board')] = None
                 hex.rich_render()
                 break
             except InvalidActionError as e:
-                console.print("[yellow]Try again:[/] " + str(e))
+                console.print(str(e))
 
         if hex.winner is not None:
             console.print(f'{Hex.player_int_to_rich(hex.winner)} wins!')
