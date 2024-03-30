@@ -150,27 +150,22 @@ if __name__ == "__main__":
     hex._print_groups()
     hex.rich_render()
     hex._print_groups()
-    print('===================================================')
 
     hex.play((0, 0))
     hex.rich_render()
     hex._print_groups()
-    print('===================================================')
 
     hex.play((1, 3))
     hex.rich_render()
     hex._print_groups()
-    print('===================================================')
 
     hex.play((0, 1))
     hex.rich_render()
     hex._print_groups()
-    print('===================================================')
 
     hex.play((5, 5))
     hex.rich_render()
     hex._print_groups()
-    print('===================================================')
     
     # hex.play((1, 3))
     
@@ -189,5 +184,59 @@ if __name__ == "__main__":
     hex.play((3, 1))
     hex.play((3, 2))
     hex.play((3, 3))
+    
+    hex.rich_render()
+    hex._print_groups()
+
+    hex.play((4, 1))
+    hex.play((4, 2))
+    hex.play((5, 1))
+    hex.play((5, 2))
+    hex.play((6, 1))
+    hex.play((6, 2))
+    hex.play((7, 1))
+    hex.play((7, 2))
+    hex.play((8, 1))
+    hex.play((8, 2))
+    hex.play((9, 1))
+    hex.play((9, 2))
+    hex.play((10, 1))
+    hex.play((10, 2))
+    hex.play((4, 0))
+    hex.play((1, 5))
+    hex.play((0, 5))
+    hex.play((0, 6))
 
     hex.rich_render()
+    hex._print_groups()
+
+    # hex.play((9, 9))   # TerminatedError: Game already terminated, the winner is 1
+    
+    hex = HexCore(11)
+    hex.play((0, 0))
+    hex.play((1, 0))
+    hex.play((0, 1))
+    hex.play((1, 1))
+    hex.play((0, 2))
+    hex.play((1, 2))
+    hex.play((0, 3))
+    hex.play((1, 3))
+    hex.play((0, 4))
+    hex.play((1, 4))
+    hex.play((0, 5))
+    hex.play((1, 5))
+    hex.play((0, 6))
+    hex.play((1, 6))
+    hex.play((0, 7))
+    hex.play((1, 7))
+    hex.play((0, 8))
+    hex.play((1, 8))
+    hex.play((0, 9))
+    hex.play((1, 9))
+    hex.play((0, 10))
+    hex.play((1, 10))
+
+    hex.rich_render()
+
+    hex.play((5, 5))   # TerminatedError: Game already terminated, the winner is -1
+
