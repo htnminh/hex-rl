@@ -22,8 +22,8 @@ def play_pvp(size: Annotated[int, typer.Option(help='Size of the board')] = None
         hex = Hex(size=size, rich_exceptions=True)
     
     hex.rich_render()
-    while hex.winner is None:
-        while True:
+    while True:  # winner
+        while True:  # valid action
             try:
                 action = Prompt.ask(f'({Hex.player_int_to_rich(hex.turn)} turn) Enter row and column separated by a space')
                 row, col = action.split()
@@ -32,10 +32,11 @@ def play_pvp(size: Annotated[int, typer.Option(help='Size of the board')] = None
                 hex.rich_render()
                 break
             except InvalidActionError as e:
-                console.print("" + str(e))
+                console.print("[yellow]Try again:[/] " + str(e))
 
         if hex.winner is not None:
             console.print(f'{Hex.player_int_to_rich(hex.winner)} wins!')
+            break
 
 
 if __name__ == '__main__':
