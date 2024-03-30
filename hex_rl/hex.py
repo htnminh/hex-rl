@@ -110,7 +110,7 @@ class HexCore:
             if i == self.size - 1:
                 res += '\\\n'
             else:
-                res += '\\\n' + '  ' * i + f'      \\\n'
+                res += '\\\n' + '  ' * i + f'      \\' + ' ' * (self.size * 4 - 1) + '\\\n'
         res += '  ' * (self.size) + '    ' +  '[red]' + '-' * (self.size * 4 + 1) + '[/red]' + '\n'
         
         console.print(res)
