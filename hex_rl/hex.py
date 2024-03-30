@@ -97,21 +97,21 @@ class HexCore:
         console = Console(highlight=False)
 
         res = '    ' + '  '.join(f'{i:2d}' for i in range(self.size)) + '\n\n'
-        res += '    ' + '[red]' + '-' * (self.size * 4 + 1) + '[/red]' + '\n'
+        res += '    ' + '[bold red]' + '-' * (self.size * 4 + 1) + '[/]' + '\n'
         for i in range(self.size):
-            res += '  ' * i + f'{i:2d}   \\'
+            res += '  ' * i + f'{i:2d}   [bold blue]\\\[/]'
             for j in range(self.size):
                 if self.board[i, j] == 1:
-                    res += ' X  ' if j != self.size - 1 else ' X '
+                    res += ' [bold red]X[/]  ' if j != self.size - 1 else ' [bold red]X[/] '
                 elif self.board[i, j] == -1:
-                    res += ' O  ' if j != self.size - 1 else ' O '
+                    res += ' [bold blue]O[/]  ' if j != self.size - 1 else ' [bold blue]O[/] '
                 else:
                     res += ' .  ' if j != self.size - 1 else ' . '
             if i == self.size - 1:
-                res += '\\\n'
+                res += '[bold blue]\\\[/]\n'
             else:
-                res += '\\\n' + '  ' * i + f'      \\' + ' ' * (self.size * 4 - 1) + '\\\n'
-        res += '  ' * (self.size) + '    ' +  '[red]' + '-' * (self.size * 4 + 1) + '[/red]' + '\n'
+                res += '[bold blue]\\\[/]\n' + '  ' * i + f'      [bold blue]\\\[/]' + ' ' * (self.size * 4 - 1) + '[bold blue]\\\[/]\n'
+        res += '  ' * (self.size) + '    ' +  '[bold red]' + '-' * (self.size * 4 + 1) + '[/]' + '\n'
         
         console.print(res)
     
