@@ -71,10 +71,8 @@ class HexCore:
 
     def _add_to_and_merge_groups(self, tup_action: tuple[int, int]) -> None:
         if self.board[tup_action] == 1:
-            print('group1')
             self._first_groups = self._merge_groups(tup_action, self._first_groups)
         else:
-            print('group2')
             self._second_groups = self._merge_groups(tup_action, self._second_groups)
         
 
@@ -86,11 +84,11 @@ class HexCore:
         old_groups = list()
         for neighbor in neighbors:
             for group in groups:
-                if neighbor in group:
-                    new_group |= group
+                if neighbor in group and group not in old_groups:
                     old_groups.append(group)
+                    new_group |= group
                     break
-
+        
         for group in old_groups:
             groups.remove(group)
         groups.append(new_group)
@@ -135,11 +133,20 @@ class HexCore:
     
 
     def check_winner(self):
-        pass
-    
+        for group in self._first_groups:
+            if any(tup_action[0] == 0 for tup_action in group) and \
+                any(tup_action[0] == self.size - 1 for tup_action in group):
+                return 1
+        for group in self._second_groups:
+            if any(tup_action[1] == 0 for tup_action in group) and \
+                any(tup_action[1] == self.size - 1 for tup_action in group):
+                return -1
+        return None
+        
+
 
 if __name__ == "__main__":
-    hex = HexCore(13)
+    hex = HexCore(11)
     hex._print_groups()
     hex.rich_render()
     hex._print_groups()
@@ -157,5 +164,30 @@ if __name__ == "__main__":
 
     hex.play((0, 1))
     hex.rich_render()
-    # hex.play((1, 3))
     hex._print_groups()
+    print('===================================================')
+
+    hex.play((5, 5))
+    hex.rich_render()
+    hex._print_groups()
+    print('===================================================')
+    
+    # hex.play((1, 3))
+    
+    hex.play((0, 2))
+    hex.play((0, 4))
+    hex.play((1, 2))
+
+    hex.rich_render()
+    hex._print_groups()
+
+    hex.play((1, 4))
+    hex.play((2, 2))
+    hex.play((2, 3))
+    hex.play((2, 4))
+    hex.play((3, 0))
+    hex.play((3, 1))
+    hex.play((3, 2))
+    hex.play((3, 3))
+
+    hex.rich_render()
