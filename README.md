@@ -1,6 +1,7 @@
 # Implementation of an End-to-End Reinforcement Learning Framework for Hex Strategy Optimization with Command-Line and Graphical User Interfaces
 
 Bachelor Thesis at Hanoi University of Science and Technology
+
 Hoang Tran Nhat Minh (Student ID 20204883)
 
 ## Abstract
