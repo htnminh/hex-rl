@@ -21,13 +21,13 @@ class InvalidActionError(Exception):
 
 class Hex:
     """
-    Size: 2 to 20
+    Size: in a range
     Players:
         1 (first / X / red) upper & lower edges
         -1 (second / O / blue) left & right edges
     """
     def __init__(self, size: int, rich_exceptions: bool = False) -> None:
-        assert 2 <= size <= 20, "Board size must be between 2 and 20"
+        assert 3 <= size <= 19, "Board size must be between 3 and 19"
 
         self.size = size
         self.board = self.init_board()
