@@ -1,17 +1,27 @@
 from pprint import pprint
+import warnings
 import numpy as np
 from rich.console import Console
 
 
+
+class InvalidSizeError(Exception):
+    """When the board size is invalid."""
+    def __init__(self, size: int, upper_limit: int, lower_limit: int, rich: bool = False) -> None:
+        super().__init__(f"Board size must be between {lower_limit} and {upper_limit}, got {size}")
+
+
 class TerminatedError(Exception):
+    """When the game ended."""
     def __init__(self, winner: int, rich: bool = False) -> None:
         if rich:
-            super().__init__(f"Game already terminated, the winner is {Hex.player_int_to_rich(winner)}")
+            super().__init__(f"Game already ended, the winner is {Hex.player_int_to_rich(winner)}")
         else:
-            super().__init__(f"Game already terminated, the winner is {Hex.player_int_to_char(winner)}")
+            super().__init__(f"Game already ended, the winner is {Hex.player_int_to_char(winner)}")
     
 
 class InvalidActionError(Exception):
+    """When the action is invalid."""
     def __init__(self, action: tuple[int, int], player: int, rich: bool = False) -> None:
         if rich:
             super().__init__(f"Invalid action at cell [bold]{action}[/bold], played by {Hex.player_int_to_rich(player)}")
@@ -19,15 +29,32 @@ class InvalidActionError(Exception):
             super().__init__(f"Invalid action at cell {action}, played by {Hex.player_int_to_char(player)}")
 
 
+
+
 class Hex:
     """
-    Size: in a range
-    Players:
-        1 (first / X / red) upper & lower edges
-        -1 (second / O / blue) left & right edges
+    The Hex core game.
+
+    Parameters:
+        size
+            Must be between LOWER_SIZE_LIMIT and UPPER_SIZE_LIMIT
+            Should be odd number
+        rich
+            Whether to use rich exceptions or not
+            Only used when catched by the CLI program
+        Players:
+            1 (first / X / red) upper & lower edges
+            -1 (second / O / blue) left & right edges
     """
-    def __init__(self, size: int, rich_exceptions: bool = False) -> None:
-        assert 3 <= size <= 19, "Board size must be between 3 and 19"
+    LOWER_SIZE_LIMIT = 3
+    UPPER_SIZE_LIMIT = 19
+
+    def __init__(self, size: int, rich_exceptions: bool = True) -> None:
+        
+        if not self.LOWER_SIZE_LIMIT <= size <= self.UPPER_SIZE_LIMIT:
+            raise InvalidSizeError(size, self.UPPER_SIZE_LIMIT, self.LOWER_SIZE_LIMIT, rich=rich_exceptions)
+        if size % 2 == 0:
+            warnings.warn(f"The game is traditionally played on odd-sized board, got even size {size}")
 
         self.size = size
         self.board = self.init_board()
@@ -172,7 +199,7 @@ class Hex:
 
 
 if __name__ == "__main__":
-    hex = Hex(11)
+    hex = Hex(11, rich_exceptions=False)
     hex._print_groups()
     hex.rich_render()
     hex._print_groups()
@@ -236,9 +263,9 @@ if __name__ == "__main__":
     hex.rich_render()
     hex._print_groups()
 
-    # hex.play((9, 9))   # TerminatedError: Game already terminated, the winner is X
+    # hex.play((9, 9))   # TerminatedError: Game already ended, the winner is X
     
-    hex = Hex(11)
+    hex = Hex(11, rich_exceptions=False)
     hex.play((0, 0))
     hex.play((1, 0))
     hex.play((0, 1))
@@ -264,5 +291,5 @@ if __name__ == "__main__":
 
     hex.rich_render()
 
-    # hex.play((5, 5))   # TerminatedError: Game already terminated, the winner is -1
+    hex.play((5, 5))   # TerminatedError: Game already ended, the winner is O
 
