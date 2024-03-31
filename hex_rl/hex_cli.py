@@ -14,12 +14,9 @@ app.add_typer(play_app, name='play')
 
 
 @play_app.command('pvp')
-def play_pvp(size: Annotated[int, typer.Option(help='Size of the board')] = None):
+def play_pvp(size: Annotated[int, typer.Option(help='Size of the board')] = 11):
     console = Console(highlight=False)
-    if size is None:
-        hex = Hex(rich_exceptions=True)
-    else:
-        hex = Hex(size=size, rich_exceptions=True)
+    hex = Hex(size=size, rich_exceptions=True)
     
     hex.rich_render()
     while True:  # winner

@@ -26,7 +26,7 @@ class Hex:
         1 (first / X / red) upper & lower edges
         -1 (second / O / blue) left & right edges
     """
-    def __init__(self, size: int = 11, rich_exceptions: bool = False) -> None:
+    def __init__(self, size: int, rich_exceptions: bool = False) -> None:
         assert 2 <= size <= 20, "Board size must be between 2 and 20"
 
         self.size = size
@@ -193,7 +193,7 @@ if __name__ == "__main__":
     hex.rich_render()
     hex._print_groups()
     
-    hex.play((1, 3))  # InvalidActionError: Invalid action at cell (1, 3), played by O
+    # hex.play((1, 3))  # InvalidActionError: Invalid action at cell (1, 3), played by O
     
     hex.play((0, 2))
     hex.play((0, 4))
