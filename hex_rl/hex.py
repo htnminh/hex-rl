@@ -7,7 +7,7 @@ from rich.console import Console
 
 class InvalidSizeError(Exception):
     """When the board size is invalid."""
-    def __init__(self, size: int, upper_limit: int, lower_limit: int, rich: bool = False) -> None:
+    def __init__(self, size: int, lower_limit: int, upper_limit: int, rich: bool = False) -> None:
         super().__init__(f"Board size must be between {lower_limit} and {upper_limit}, got {size}")
 
 
@@ -52,7 +52,7 @@ class Hex:
     def __init__(self, size: int, rich_exceptions: bool = True) -> None:
         
         if not self.LOWER_SIZE_LIMIT <= size <= self.UPPER_SIZE_LIMIT:
-            raise InvalidSizeError(size, self.UPPER_SIZE_LIMIT, self.LOWER_SIZE_LIMIT, rich=rich_exceptions)
+            raise InvalidSizeError(size, self.LOWER_SIZE_LIMIT, self.UPPER_SIZE_LIMIT, rich=rich_exceptions)
         if size % 2 == 0:
             warnings.warn(f"The game is traditionally played on odd-sized board, got even size {size}")
 
@@ -190,13 +190,20 @@ class Hex:
 
     def get_char_winner(self) -> str:
         return self.player_int_to_char(self.winner)
-    
+
 
     @staticmethod
     def player_int_to_rich(player: int) -> str:
         return '[bold red]X[/bold red]' if player == 1 else '[bold blue]O[/bold blue]'
     
+    
+    def get_rich_turn(self) -> str:
+        return self.player_int_to_rich(self.turn)
+    
 
+    def get_rich_winner(self) -> str:
+        return self.player_int_to_rich(self.winner)
+    
 
 if __name__ == "__main__":
     hex = Hex(11, rich_exceptions=False)
