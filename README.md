@@ -8,7 +8,9 @@ Hoang Tran Nhat Minh (Student ID 20204883)
 
 
 ## How to run
-To install all dependencies, run:
+The project is implemented and tested on [Python 3.11.7](https://github.com/python/cpython/releases/tag/v3.11.7), and should work on newer releases.
+
+Install all dependencies:
 ```bash
 pip install -r requirements.txt
 ```
