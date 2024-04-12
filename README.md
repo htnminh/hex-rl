@@ -15,6 +15,11 @@ Install all dependencies:
 pip install -r requirements.txt
 ```
 
+Start with:
+```bash
+python hex_rl/hex_cli.py --help
+```
+
 
 
 
