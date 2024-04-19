@@ -89,8 +89,8 @@ class HexagonGrid:
         ]
         for hexagon in colliding_hexagons:
             for neighbour in hexagon.compute_neighbours(self._flatten_hexagons(hexagons)):
-                neighbour.render_highlight(screen, border_colour=(100, 100, 100))
-            hexagon.render_highlight(screen, border_colour=(0, 0, 0))
+                neighbour.render_highlight()
+            hexagon.render_highlight()
         pygame.display.flip()
 
     
@@ -108,6 +108,12 @@ class HexagonGrid:
                 if event.type == pygame.QUIT:
                     terminated = True
 
+                if event.type == pygame.MOUSEBUTTONUP:
+                    for hexagon in self._flatten_hexagons(hexagons):
+                        if hexagon.collide_with_point(pygame.mouse.get_pos()):
+                            hexagon.marked = True
+                            break
+
             for hexagon in self._flatten_hexagons(hexagons):
                 hexagon.update()
 
@@ -117,6 +123,6 @@ class HexagonGrid:
 
 
 if __name__ == "__main__":
-    HexagonGrid(n_rows_and_cols=3).main()
+    HexagonGrid(n_rows_and_cols=7).main()
 
 

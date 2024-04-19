@@ -25,6 +25,8 @@ class HexagonTile:
     highlight_offset: int = 3
     max_highlight_ticks: int = 10
 
+    marked = False
+
 
     def __post_init__(self):
         self.vertices = self.compute_vertices()
@@ -76,12 +78,18 @@ class HexagonTile:
         """Renders the hexagon on the screen"""
         pygame.draw.polygon(screen, self.highlight_colour, self.vertices)
         pygame.draw.aalines(screen, (0, 0, 0), closed=True, points=self.vertices)
+        if self.marked:
+            self.mark(screen)
 
 
-    def render_highlight(self, screen, border_colour) -> None:
-        """Draws a border around the hexagon with the specified colour"""
+    def render_highlight(self) -> None:
         self.highlight_tick = self.max_highlight_ticks
     
+
+    def mark(self, screen) -> None:
+        """Marks the hexagon with a red border"""
+        pygame.draw.circle(screen, (255, 0, 0), self.centre, 0.7 * self.minimal_radius)
+
 
     @property
     def centre(self) -> Tuple[float, float]:
