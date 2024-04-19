@@ -7,6 +7,9 @@ is licensed under the MIT License.
 
 from typing import List
 from dataclasses import dataclass
+from itertools import chain
+
+import pprint
 
 import pygame
 from pyg_hexagon import HexagonTile
@@ -14,10 +17,11 @@ from pyg_hexagon import HexagonTile
 
 @dataclass
 class HexagonGrid:
+    n_rows_and_cols: int = 17
+
     radius = 25
     colour = (220, 220, 220)
     init_position = (50, 25)
-    n_rows_and_cols: int = 17
     screen_fill_colour = (200, 200, 200)
     
 
@@ -31,49 +35,60 @@ class HexagonGrid:
         )
 
         
-    def init_hexagons(self) -> List[HexagonTile]:
+    def init_hexagons(self) -> List[List[HexagonTile]]:
         """Creates a hexaogonal tile map of size num_x * num_y"""
-        # pylint: disable=invalid-name
-        leftmost_hexagon = HexagonTile(
-            radius=self.radius, position=self.init_position, colour=self.colour)
-        hexagons = [leftmost_hexagon]
-        for x in range(self.n_rows_and_cols):
-            if x:
-                # alternate between bottom left and bottom right vertices of hexagon above
-                # index = 2 if x % 2 == 1 or flat_top else 4
-                index = 4
-                position = leftmost_hexagon.vertices[index]
+        hexagon_row = []
+        hexagons = []
+        for i in range(self.n_rows_and_cols):
+            if i == 0:
+                leftmost_hexagon = HexagonTile(
+                    radius=self.radius, position=self.init_position, colour=self.colour)
+            else:
+                position = leftmost_hexagon.vertices[4]
                 leftmost_hexagon = HexagonTile(
                     radius=self.radius, position=position, colour=self.colour)
-                hexagons.append(leftmost_hexagon)
+            hexagon_row.append(leftmost_hexagon)
 
             # place hexagons to the left of leftmost hexagon, with equal y-values.
             hexagon = leftmost_hexagon
-            for i in range(self.n_rows_and_cols - 1):
-                x_coord, y_coord = hexagon.position  # type: ignore
+            for j in range(1, self.n_rows_and_cols):
+                x, y = hexagon.position  # type: ignore
                 hexagon = HexagonTile(
                     radius=self.radius,
-                    position=(x_coord + hexagon.minimal_radius * 2, y_coord),
+                    position=(x + hexagon.minimal_radius * 2, y),
                     colour=self.colour
                 )
-                hexagons.append(hexagon)
+                hexagon_row.append(hexagon)
+
+            hexagons.append(hexagon_row)
+            hexagon_row = []
+
+            # print("i:", i)
+            # pprint.pprint(hexagons)
 
         return hexagons
+
+
+    @staticmethod
+    def _flatten_hexagons(hexagons: List[List[HexagonTile]]) -> List[HexagonTile]:
+        """Flattens a list of lists of hexagons"""
+        return list(chain.from_iterable(hexagons))
 
 
     def render(self, screen, hexagons):
         """Renders hexagons on the screen"""
         screen.fill(self.screen_fill_colour)
-        for hexagon in hexagons:
+        for hexagon in self._flatten_hexagons(hexagons):
             hexagon.render(screen)
 
         # draw borders around colliding hexagons and neighbours
         mouse_pos = pygame.mouse.get_pos()
         colliding_hexagons = [
-            hexagon for hexagon in hexagons if hexagon.collide_with_point(mouse_pos)
+            hexagon for hexagon in self._flatten_hexagons(hexagons)
+                        if hexagon.collide_with_point(mouse_pos)
         ]
         for hexagon in colliding_hexagons:
-            for neighbour in hexagon.compute_neighbours(hexagons):
+            for neighbour in hexagon.compute_neighbours(self._flatten_hexagons(hexagons)):
                 neighbour.render_highlight(screen, border_colour=(100, 100, 100))
             hexagon.render_highlight(screen, border_colour=(0, 0, 0))
         pygame.display.flip()
@@ -85,6 +100,7 @@ class HexagonGrid:
         screen = pygame.display.set_mode(self.screen_size)
         clock = pygame.time.Clock()
         hexagons = self.init_hexagons()
+        pprint.pprint(hexagons)
         terminated = False
 
         while not terminated:
@@ -92,7 +108,7 @@ class HexagonGrid:
                 if event.type == pygame.QUIT:
                     terminated = True
 
-            for hexagon in hexagons:
+            for hexagon in self._flatten_hexagons(hexagons):
                 hexagon.update()
 
             self.render(screen, hexagons)
@@ -101,6 +117,6 @@ class HexagonGrid:
 
 
 if __name__ == "__main__":
-    HexagonGrid(n_rows_and_cols=13).main()
+    HexagonGrid(n_rows_and_cols=3).main()
 
 
