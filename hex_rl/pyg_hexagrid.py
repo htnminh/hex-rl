@@ -17,16 +17,20 @@ class HexagonGrid:
     radius = 25
     colour = (220, 220, 220)
     init_position = (50, 25)
-    n_rows_and_cols = 7
+    n_rows_and_cols: int = 17
     screen_fill_colour = (200, 200, 200)
-    # screen_size = (1175+5, 700)
-    _minimal_radius = HexagonTile(radius=radius, position=(0,0), colour=(0,0,0)).minimal_radius
-    screen_size = (
-        3 * _minimal_radius * n_rows_and_cols + 50,
-        1.5 * radius * n_rows_and_cols + 75)
+    
 
+    def __post_init__(self):
+        """Initializes properties that need calculations (or not constants)"""
+        self._minimal_radius = HexagonTile(
+            radius=self.radius, position=(0,0), colour=(0,0,0)).minimal_radius
+        self.screen_size = (
+            3   * self._minimal_radius * self.n_rows_and_cols + 50,
+            1.5 * self.radius          * self.n_rows_and_cols + 75
+        )
 
-
+        
     def init_hexagons(self) -> List[HexagonTile]:
         """Creates a hexaogonal tile map of size num_x * num_y"""
         # pylint: disable=invalid-name
@@ -97,6 +101,6 @@ class HexagonGrid:
 
 
 if __name__ == "__main__":
-    HexagonGrid().main()
+    HexagonGrid(n_rows_and_cols=13).main()
 
 
