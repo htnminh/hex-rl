@@ -43,8 +43,8 @@ class Hex:
             Whether to use rich exceptions or not
             Only used when catched by the CLI program
         Players:
-            1 (first / X / red) upper & lower edges
-            -1 (second / O / blue) left & right edges
+             1 (first  / red  / X - CLI only) upper & lower edges
+            -1 (second / blue / O - CLI only) left & right edges
     """
     LOWER_SIZE_LIMIT = 3
     UPPER_SIZE_LIMIT = 19

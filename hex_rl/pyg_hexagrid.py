@@ -9,7 +9,7 @@ from typing import List
 from dataclasses import dataclass
 from itertools import chain
 
-import pprint
+# import pprint
 
 import pygame
 from pyg_hexagon import HexagonTile
@@ -100,9 +100,12 @@ class HexagonGrid:
         screen = pygame.display.set_mode(self.screen_size)
         clock = pygame.time.Clock()
         hexagons = self.init_hexagons()
-        pprint.pprint(hexagons)
+        # pprint.pprint(hexagons)
         terminated = False
 
+        # TODO: add core game here. check duplicate code with cli.
+
+        player = 1
         while not terminated:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -111,7 +114,8 @@ class HexagonGrid:
                 if event.type == pygame.MOUSEBUTTONUP:
                     for hexagon in self._flatten_hexagons(hexagons):
                         if hexagon.collide_with_point(pygame.mouse.get_pos()):
-                            hexagon.player = -1
+                            hexagon.player = player
+                            player *= -1
                             break
 
             for hexagon in self._flatten_hexagons(hexagons):
