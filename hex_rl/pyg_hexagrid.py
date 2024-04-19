@@ -111,7 +111,7 @@ class HexagonGrid:
                 if event.type == pygame.MOUSEBUTTONUP:
                     for hexagon in self._flatten_hexagons(hexagons):
                         if hexagon.collide_with_point(pygame.mouse.get_pos()):
-                            hexagon.marked = True
+                            hexagon.player = -1
                             break
 
             for hexagon in self._flatten_hexagons(hexagons):
