@@ -46,10 +46,10 @@ class HexagonGrid:
             # place hexagons to the left of leftmost hexagon, with equal y-values.
             hexagon = leftmost_hexagon
             for i in range(self.n_rows_and_cols - 1):
-                x, y = hexagon.position  # type: ignore
+                x_coord, y_coord = hexagon.position  # type: ignore
                 hexagon = HexagonTile(
                     radius=self.radius,
-                    position=(x + hexagon.minimal_radius * 2, y),
+                    position=(x_coord + hexagon.minimal_radius * 2, y_coord),
                     colour=self.colour
                 )
                 hexagons.append(hexagon)
