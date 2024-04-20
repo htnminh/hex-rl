@@ -4,10 +4,10 @@ import numpy as np
 from rich.console import Console
 
 
-
 class InvalidSizeError(Exception):
     """When the board size is invalid."""
     def __init__(self, size: int, lower_limit: int, upper_limit: int, rich: bool = False) -> None:
+        # skip rich exceptions
         super().__init__(f"Board size must be between {lower_limit} and {upper_limit}, got {size}")
 
 
@@ -15,19 +15,18 @@ class TerminatedError(Exception):
     """When the game ended."""
     def __init__(self, winner: int, rich: bool = False) -> None:
         if rich:
-            super().__init__(f"Game already ended, the winner is {Hex.player_int_to_rich(winner)}")
+            super().__init__(f"Game already ended, the winner is {Hex.player_int_to_rich_color(winner)} / {Hex.player_int_to_rich_char(winner)}")
         else:
-            super().__init__(f"Game already ended, the winner is {Hex.player_int_to_char(winner)}")
+            super().__init__(f"Game already ended, the winner is {Hex.player_int_to_color(winner)} / {Hex.player_int_to_char(winner)}")
     
 
 class InvalidActionError(Exception):
     """When the action is invalid."""
     def __init__(self, action: tuple[int, int], player: int, rich: bool = False) -> None:
         if rich:
-            super().__init__(f"Invalid action at cell [bold]{action}[/bold], played by {Hex.player_int_to_rich(player)}")
+            super().__init__(f"Invalid action at cell [bold]{action}[/bold], played by {Hex.player_int_to_rich_color(player)} / {Hex.player_int_to_rich_char(player)}")
         else:
-            super().__init__(f"Invalid action at cell {action}, played by {Hex.player_int_to_char(player)}")
-
+            super().__init__(f"Invalid action at cell {action}, played by {Hex.player_int_to_color(player)} / {Hex.player_int_to_char(player)}")
 
 
 
@@ -51,7 +50,7 @@ class Hex:
         """
         
         if not self.LOWER_SIZE_LIMIT <= size <= self.UPPER_SIZE_LIMIT:
-            raise InvalidSizeError(size, self.LOWER_SIZE_LIMIT, self.UPPER_SIZE_LIMIT, rich=rich_exceptions)
+            raise InvalidSizeError(size, hex=self)
         if size % 2 == 0:
             warnings.warn(f"The game is traditionally played on odd-sized board, got even size {size}")
 
@@ -148,7 +147,7 @@ class Hex:
             res += '  ' * i + f'{i:2d}   [bold blue]\\\[/]'
             for j in range(self.size):
                 if self.board[i, j] in [-1, 1]:
-                    player_rich = self.player_int_to_rich(self.board[i, j])
+                    player_rich = self.player_int_to_rich_char(self.board[i, j])
                     res += f' {player_rich}  ' if j != self.size - 1 else f' {player_rich} '
                 else:
                     res += f' {bold_dot}  ' if j != self.size - 1 else f' {bold_dot} '
@@ -180,10 +179,15 @@ class Hex:
 
     @staticmethod
     def player_int_to_char(player: int) -> str:
-        return 'X' if player == 1 else 'O'
+        if player == 1:
+            return 'X'
+        elif player == -1:
+            return 'O'
+        else:
+            return '(no one)'
     
 
-    def get_char_turn(self) -> str:
+    def get_char_player(self) -> str:
         return self.player_int_to_char(self.player)
     
 
@@ -192,16 +196,57 @@ class Hex:
 
 
     @staticmethod
-    def player_int_to_rich(player: int) -> str:
-        return '[bold red]X[/bold red]' if player == 1 else '[bold blue]O[/bold blue]'
+    def player_int_to_rich_char(player: int) -> str:
+        if player == 1:
+            return f'[bold red]X[/bold red]'
+        elif player == -1:
+            return f'[bold blue]O[/bold blue]'
+        else:
+            return f'[bold](no one)[/bold]'
     
     
-    def get_rich_turn(self) -> str:
-        return self.player_int_to_rich(self.player)
+    def get_rich_char_player(self) -> str:
+        return self.player_int_to_rich_char(self.player)
     
 
-    def get_rich_winner(self) -> str:
-        return self.player_int_to_rich(self.winner)
+    def get_rich_char_winner(self) -> str:
+        return self.player_int_to_rich_char(self.winner)
+    
+
+    @staticmethod
+    def player_int_to_color(player: int) -> str:
+        if player == 1:
+            return 'red'
+        elif player == -1:
+            return 'blue'
+        else:
+            return '(no one)'
+    
+
+    def get_color_player(self) -> str:
+        return self.player_int_to_color(self.player)
+    
+
+    def get_color_winner(self) -> str:
+        return self.player_int_to_color(self.winner)
+    
+
+    @staticmethod
+    def player_int_to_rich_color(player: int) -> str:
+        if player == 1:
+            return '[bold red]red[/bold red]'
+        elif player == -1:
+            return '[bold blue]blue[/bold blue]'
+        else:
+            return '[bold](no one)[/bold]'
+        
+
+    def get_rich_color_player(self) -> str:
+        return self.player_int_to_rich_color(self.player)
+    
+    
+    def get_rich_color_winner(self) -> str:
+        return self.player_int_to_rich_color(self.winner)
     
 
 if __name__ == "__main__":
