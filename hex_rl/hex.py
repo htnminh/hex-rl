@@ -25,8 +25,9 @@ class TerminatedError(Exception):
 class InvalidActionError(Exception):
     """When the action is invalid."""
     def __init__(self, action: tuple[int, int], player: int, rich: bool = False) -> None:
+        row, col = action
         if rich:
-            super().__init__(f"Invalid action at cell [bold]{action}[/bold], played by {Hex.player_int_to_rich_color(player)} / {Hex.player_int_to_rich_char(player)}")
+            super().__init__(f"Invalid action at cell [bold]([orange1]{row}[/orange1], [green]{col}[/green])[/bold], played by {Hex.player_int_to_rich_color(player)} / {Hex.player_int_to_rich_char(player)}")
         else:
             super().__init__(f"Invalid action at cell {action}, played by {Hex.player_int_to_color(player)} / {Hex.player_int_to_char(player)}")
 
