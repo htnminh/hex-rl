@@ -25,7 +25,7 @@ class HexagonTile:
     highlight_offset: int = 3
     max_highlight_ticks: int = 10
 
-    player = 0
+    player = None
 
 
     def __post_init__(self):
@@ -88,6 +88,11 @@ class HexagonTile:
         self.highlight_tick = self.max_highlight_ticks
         
 
+    def play(self, player) -> None:
+        if self.player is None:
+            self.player = player
+        else:
+            raise ValueError("Invalid action")  # TODO: define an exception
 
     @property
     def centre(self) -> Tuple[float, float]:

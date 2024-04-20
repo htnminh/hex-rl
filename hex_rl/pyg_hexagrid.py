@@ -8,6 +8,7 @@ is licensed under the MIT License.
 from typing import List
 from dataclasses import dataclass
 from itertools import chain
+from hex import Hex
 
 # import pprint
 
@@ -104,19 +105,25 @@ class HexagonGrid:
         terminated = False
 
         # TODO: add core game here. check duplicate code with cli.
+        hex = Hex(size=self.n_rows_and_cols, rich_exceptions=False)
+        player = hex.player
 
-        player = 1
         while not terminated:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     terminated = True
 
                 if event.type == pygame.MOUSEBUTTONUP:
-                    for hexagon in self._flatten_hexagons(hexagons):
-                        if hexagon.collide_with_point(pygame.mouse.get_pos()):
-                            hexagon.player = player
-                            player *= -1
-                            break
+                    for i, hexagon_row in enumerate(hexagons):
+                        for j, hexagon in enumerate(hexagon_row):
+                            if hexagon.collide_with_point(pygame.mouse.get_pos()):
+                                try:
+                                    hex.play((i, j))
+                                    hexagon.play(player)
+                                except Exception as e:
+                                    print(e)
+                                player = hex.player
+                                break
 
             for hexagon in self._flatten_hexagons(hexagons):
                 hexagon.update()

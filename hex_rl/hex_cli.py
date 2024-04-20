@@ -22,15 +22,15 @@ def play_pvp(size: Annotated[int, typer.Option(help='Size of the board')] = 11,
     console = Console(highlight=False)
     hex = Hex(size=size)
     
-    hex.rich_render()
+    hex.rich_print()
     while True:  # winner
         while True:  # valid action
             try:
-                action = Prompt.ask(f'({Hex.player_int_to_rich(hex.turn)} turn) Enter row and column separated by a space')
+                action = Prompt.ask(f'({Hex.player_int_to_rich(hex.player)} turn) Enter row and column separated by a space')
                 row, col = action.split()
 
                 hex.play((int(row), int(col)))  # InvalidActionError may be raised here
-                hex.rich_render()
+                hex.rich_print()
 
                 if debug:
                     hex._print_groups()

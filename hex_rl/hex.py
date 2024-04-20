@@ -58,7 +58,7 @@ class Hex:
 
         self.size = size
         self.board = self.init_board()
-        self.turn = 1
+        self.player = 1
         self.winner = None
 
         self._first_groups: list[set[tuple[int, int]]] = list()
@@ -78,12 +78,12 @@ class Hex:
         if not self.is_valid_action(tup_action):
             raise InvalidActionError(tup_action, self.board[tup_action], rich=self.rich_exceptions)
 
-        self.board[tup_action] = self.turn
+        self.board[tup_action] = self.player
 
         self._add_to_and_merge_groups(tup_action)
         self.winner = self.check_winner()
 
-        self.turn *= -1
+        self.player *= -1
     
 
     def is_valid_action(self, tup_action: tuple[int, int]) -> bool:
@@ -162,7 +162,7 @@ class Hex:
         return res
 
 
-    def rich_render(self) -> str:
+    def rich_print(self) -> str:
         console = Console(highlight=False)
         console.print(self.get_rich_str())
     
@@ -185,7 +185,7 @@ class Hex:
     
 
     def get_char_turn(self) -> str:
-        return self.player_int_to_char(self.turn)
+        return self.player_int_to_char(self.player)
     
 
     def get_char_winner(self) -> str:
@@ -198,7 +198,7 @@ class Hex:
     
     
     def get_rich_turn(self) -> str:
-        return self.player_int_to_rich(self.turn)
+        return self.player_int_to_rich(self.player)
     
 
     def get_rich_winner(self) -> str:
@@ -208,23 +208,23 @@ class Hex:
 if __name__ == "__main__":
     hex = Hex(11, rich_exceptions=False)
     hex._print_groups()
-    hex.rich_render()
+    hex.rich_print()
     hex._print_groups()
 
     hex.play((0, 0))
-    hex.rich_render()
+    hex.rich_print()
     hex._print_groups()
 
     hex.play((1, 3))
-    hex.rich_render()
+    hex.rich_print()
     hex._print_groups()
 
     hex.play((0, 1))
-    hex.rich_render()
+    hex.rich_print()
     hex._print_groups()
 
     hex.play((5, 5))
-    hex.rich_render()
+    hex.rich_print()
     hex._print_groups()
     
     # hex.play((1, 3))  # InvalidActionError: Invalid action at cell (1, 3), played by O
@@ -233,7 +233,7 @@ if __name__ == "__main__":
     hex.play((0, 4))
     hex.play((1, 2))
 
-    hex.rich_render()
+    hex.rich_print()
     hex._print_groups()
 
     hex.play((1, 4))
@@ -245,7 +245,7 @@ if __name__ == "__main__":
     hex.play((3, 2))
     hex.play((3, 3))
     
-    hex.rich_render()
+    hex.rich_print()
     hex._print_groups()
 
     hex.play((4, 1))
@@ -267,7 +267,7 @@ if __name__ == "__main__":
     hex.play((0, 5))
     hex.play((0, 6))
 
-    hex.rich_render()
+    hex.rich_print()
     hex._print_groups()
 
     # hex.play((9, 9))   # TerminatedError: Game already ended, the winner is X
@@ -296,7 +296,7 @@ if __name__ == "__main__":
     hex.play((0, 10))
     hex.play((1, 10))
 
-    hex.rich_render()
+    hex.rich_print()
 
     hex.play((5, 5))   # TerminatedError: Game already ended, the winner is O
 
