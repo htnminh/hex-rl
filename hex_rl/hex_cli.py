@@ -20,13 +20,13 @@ app.add_typer(play_app, name='play', help='Play (or spectate) a game of Hex in t
 def play_pvp(size: Annotated[int, typer.Option(help='Size of the board')] = 11,
              debug: Annotated[bool, typer.Option(help='Debug mode')] = False):
     console = Console(highlight=False)
-    hex = Hex(size=size, rich_exceptions=True)
+    hex = Hex(size=size)
     
     hex.rich_print()
     while True:  # winner
         while True:  # valid action
             try:
-                action = Prompt.ask(f'({Hex.player_int_to_rich(hex.player)} turn) Enter row and column separated by a space')
+                action = Prompt.ask(f'({Hex.player_int_to_rich_char(hex.player)} turn) Enter row and column separated by a space')
                 row, col = action.split()
 
                 hex.play((int(row), int(col)))  # InvalidActionError may be raised here
@@ -41,7 +41,7 @@ def play_pvp(size: Annotated[int, typer.Option(help='Size of the board')] = 11,
                 console.print(str(e))
 
         if hex.winner is not None:
-            console.print(f'{Hex.player_int_to_rich(hex.winner)} wins!')
+            console.print(f'{Hex.player_int_to_rich_char(hex.winner)} wins!')
             break
 
 
