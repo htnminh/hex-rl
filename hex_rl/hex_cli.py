@@ -18,9 +18,11 @@ app.add_typer(play_app, name='play', help='Play (or spectate) a game of Hex in t
 # other apps: train, test, evaluate
 # options: size, model, debug
 
+
 @play_app.command('pvp', help='Play a game of Hex against another player.')
 def play_pvp(size: Annotated[int, typer.Option(help='Size of the board')] = 11,
              debug: Annotated[bool, typer.Option(help='Debug mode')] = False):
+    """python hex_rl/hex_cli.py play pvp --size 5 --debug"""
     Hex(size=size, rich_exceptions=True).play_pvp_cli(debug=debug)
 
 

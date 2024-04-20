@@ -143,10 +143,10 @@ class Hex:
     def get_rich_str(self) -> str:
         bold_dot = '[bold]\u22C5[/bold]'
 
-        res = '    ' + '  '.join(f'{i:2d}' for i in range(self.size)) + '\n\n'
+        res = '    ' + '  '.join(f'[green]{i:2d}[/green]' for i in range(self.size)) + '\n\n'
         res += '    ' + '[bold red]' + '-' * (self.size * 4 + 1) + '[/]' + '\n'
         for i in range(self.size):
-            res += '  ' * i + f'{i:2d}   [bold blue]\\\[/]'
+            res += '  ' * i + f'[orange1]{i:2d}[/orange1]   [bold blue]\\\[/]'
             for j in range(self.size):
                 if self.board[i, j] in [-1, 1]:
                     player_rich = self.player_int_to_rich_char(self.board[i, j])
@@ -257,7 +257,7 @@ class Hex:
         Returns the action.
         """
         self.rich_print()
-        action = Prompt.ask(f'({self.get_rich_color_player()} / {self.get_rich_char_player()} turn) Enter row and column separated by a space')
+        action = Prompt.ask(f'({self.get_rich_color_player()} / {self.get_rich_char_player()} turn) Enter [orange1]row[/orange1] and [green]column[/green] separated by a space')
         row, col = action.split()
         self.play((int(row), int(col)))
         return int(row), int(col)
