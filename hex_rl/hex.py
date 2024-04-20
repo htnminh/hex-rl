@@ -2,6 +2,8 @@ from pprint import pprint
 import warnings
 import numpy as np
 from rich.console import Console
+from rich.prompt import Prompt
+from typing import Tuple
 
 
 class InvalidSizeError(Exception):
@@ -50,7 +52,7 @@ class Hex:
         """
         
         if not self.LOWER_SIZE_LIMIT <= size <= self.UPPER_SIZE_LIMIT:
-            raise InvalidSizeError(size, hex=self)
+            raise InvalidSizeError(size, self.LOWER_SIZE_LIMIT, self.UPPER_SIZE_LIMIT, rich=rich_exceptions)
         if size % 2 == 0:
             warnings.warn(f"The game is traditionally played on odd-sized board, got even size {size}")
 
@@ -249,98 +251,128 @@ class Hex:
         return self.player_int_to_rich_color(self.winner)
     
 
+    def print_prompt_and_play(self) -> Tuple[int, int]:
+        """
+        Prints the board, prompts the player for an action, and plays the actions.
+        Returns the action.
+        """
+        self.rich_print()
+        action = Prompt.ask(f'({Hex.player_int_to_rich_char(self.player)} turn) Enter row and column separated by a space')
+        row, col = action.split()
+        self.play((int(row), int(col)))
+        return int(row), int(col)
+
+
+    def play_pvp_cli(self, debug=False) -> int:
+        """Play pvp in the CLI and returns the winner"""
+        console = Console(highlight=False)
+        while True:  # winner
+            while True:  # valid action
+                try:
+                    self.print_prompt_and_play()  # InvalidActionError may be raised here
+                    if debug:
+                        self._print_groups()
+                    break
+                except InvalidActionError as e:
+                    console.print(str(e))
+
+            if self.winner is not None:
+                console.print(f'{Hex.player_int_to_rich_char(self.winner)} wins!')
+                break
+
+
 if __name__ == "__main__":
-    hex = Hex(11, rich_exceptions=False)
-    hex._print_groups()
-    hex.rich_print()
-    hex._print_groups()
+    _hex = Hex(11, rich_exceptions=False)
+    _hex._print_groups()
+    _hex.rich_print()
+    _hex._print_groups()
 
-    hex.play((0, 0))
-    hex.rich_print()
-    hex._print_groups()
+    _hex.play((0, 0))
+    _hex.rich_print()
+    _hex._print_groups()
 
-    hex.play((1, 3))
-    hex.rich_print()
-    hex._print_groups()
+    _hex.play((1, 3))
+    _hex.rich_print()
+    _hex._print_groups()
 
-    hex.play((0, 1))
-    hex.rich_print()
-    hex._print_groups()
+    _hex.play((0, 1))
+    _hex.rich_print()
+    _hex._print_groups()
 
-    hex.play((5, 5))
-    hex.rich_print()
-    hex._print_groups()
+    _hex.play((5, 5))
+    _hex.rich_print()
+    _hex._print_groups()
     
     # hex.play((1, 3))  # InvalidActionError: Invalid action at cell (1, 3), played by O
     
-    hex.play((0, 2))
-    hex.play((0, 4))
-    hex.play((1, 2))
+    _hex.play((0, 2))
+    _hex.play((0, 4))
+    _hex.play((1, 2))
 
-    hex.rich_print()
-    hex._print_groups()
+    _hex.rich_print()
+    _hex._print_groups()
 
-    hex.play((1, 4))
-    hex.play((2, 2))
-    hex.play((2, 3))
-    hex.play((2, 4))
-    hex.play((3, 0))
-    hex.play((3, 1))
-    hex.play((3, 2))
-    hex.play((3, 3))
+    _hex.play((1, 4))
+    _hex.play((2, 2))
+    _hex.play((2, 3))
+    _hex.play((2, 4))
+    _hex.play((3, 0))
+    _hex.play((3, 1))
+    _hex.play((3, 2))
+    _hex.play((3, 3))
     
-    hex.rich_print()
-    hex._print_groups()
+    _hex.rich_print()
+    _hex._print_groups()
 
-    hex.play((4, 1))
-    hex.play((4, 2))
-    hex.play((5, 1))
-    hex.play((5, 2))
-    hex.play((6, 1))
-    hex.play((6, 2))
-    hex.play((7, 1))
-    hex.play((7, 2))
-    hex.play((8, 1))
-    hex.play((8, 2))
-    hex.play((9, 1))
-    hex.play((9, 2))
-    hex.play((10, 1))
-    hex.play((10, 2))
-    hex.play((4, 0))
-    hex.play((1, 5))
-    hex.play((0, 5))
-    hex.play((0, 6))
+    _hex.play((4, 1))
+    _hex.play((4, 2))
+    _hex.play((5, 1))
+    _hex.play((5, 2))
+    _hex.play((6, 1))
+    _hex.play((6, 2))
+    _hex.play((7, 1))
+    _hex.play((7, 2))
+    _hex.play((8, 1))
+    _hex.play((8, 2))
+    _hex.play((9, 1))
+    _hex.play((9, 2))
+    _hex.play((10, 1))
+    _hex.play((10, 2))
+    _hex.play((4, 0))
+    _hex.play((1, 5))
+    _hex.play((0, 5))
+    _hex.play((0, 6))
 
-    hex.rich_print()
-    hex._print_groups()
+    _hex.rich_print()
+    _hex._print_groups()
 
     # hex.play((9, 9))   # TerminatedError: Game already ended, the winner is X
     
-    hex = Hex(11, rich_exceptions=False)
-    hex.play((0, 0))
-    hex.play((1, 0))
-    hex.play((0, 1))
-    hex.play((1, 1))
-    hex.play((0, 2))
-    hex.play((1, 2))
-    hex.play((0, 3))
-    hex.play((1, 3))
-    hex.play((0, 4))
-    hex.play((1, 4))
-    hex.play((0, 5))
-    hex.play((1, 5))
-    hex.play((0, 6))
-    hex.play((1, 6))
-    hex.play((0, 7))
-    hex.play((1, 7))
-    hex.play((0, 8))
-    hex.play((1, 8))
-    hex.play((0, 9))
-    hex.play((1, 9))
-    hex.play((0, 10))
-    hex.play((1, 10))
+    _hex = Hex(11, rich_exceptions=False)
+    _hex.play((0, 0))
+    _hex.play((1, 0))
+    _hex.play((0, 1))
+    _hex.play((1, 1))
+    _hex.play((0, 2))
+    _hex.play((1, 2))
+    _hex.play((0, 3))
+    _hex.play((1, 3))
+    _hex.play((0, 4))
+    _hex.play((1, 4))
+    _hex.play((0, 5))
+    _hex.play((1, 5))
+    _hex.play((0, 6))
+    _hex.play((1, 6))
+    _hex.play((0, 7))
+    _hex.play((1, 7))
+    _hex.play((0, 8))
+    _hex.play((1, 8))
+    _hex.play((0, 9))
+    _hex.play((1, 9))
+    _hex.play((0, 10))
+    _hex.play((1, 10))
 
-    hex.rich_print()
+    _hex.rich_print()
 
-    hex.play((5, 5))   # TerminatedError: Game already ended, the winner is O
+    _hex.play((5, 5))   # TerminatedError: Game already ended, the winner is O
 
