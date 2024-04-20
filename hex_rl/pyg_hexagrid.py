@@ -134,6 +134,6 @@ class HexagonGrid:
 
 
 if __name__ == "__main__":
-    HexagonGrid(n_rows_and_cols=7).main()
+    HexagonGrid(n_rows_and_cols=8).main()
 
 

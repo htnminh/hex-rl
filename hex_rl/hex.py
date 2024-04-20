@@ -32,24 +32,23 @@ class InvalidActionError(Exception):
 
 
 class Hex:
-    """
-    The Hex core game.
-
-    Parameters:
-        size
-            Must be between LOWER_SIZE_LIMIT and UPPER_SIZE_LIMIT
-            Should be odd number
-        rich
-            Whether to use rich exceptions or not
-            Only used when catched by the CLI program
-        Players:
-             1 (first  / red  / X - CLI only) upper & lower edges
-            -1 (second / blue / O - CLI only) left & right edges
-    """
+    """The Hex core game."""
     LOWER_SIZE_LIMIT = 3
     UPPER_SIZE_LIMIT = 19
 
-    def __init__(self, size: int, rich_exceptions: bool = True) -> None:
+    def __init__(self, size: int, rich_exceptions: bool = False) -> None:
+        """
+        Parameters:
+        size
+            Must be between LOWER_SIZE_LIMIT and UPPER_SIZE_LIMIT
+            Should be odd number
+        rich_exceptions
+            Whether to use rich exceptions or not
+            Only used when raised by the CLI program
+        Players:
+             1 (first  / red  / X - CLI only) upper & lower edges
+            -1 (second / blue / O - CLI only) left & right edges
+        """
         
         if not self.LOWER_SIZE_LIMIT <= size <= self.UPPER_SIZE_LIMIT:
             raise InvalidSizeError(size, self.LOWER_SIZE_LIMIT, self.UPPER_SIZE_LIMIT, rich=rich_exceptions)

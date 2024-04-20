@@ -20,7 +20,7 @@ app.add_typer(play_app, name='play', help='Play (or spectate) a game of Hex in t
 def play_pvp(size: Annotated[int, typer.Option(help='Size of the board')] = 11,
              debug: Annotated[bool, typer.Option(help='Debug mode')] = False):
     console = Console(highlight=False)
-    hex = Hex(size=size)
+    hex = Hex(size=size, rich_exceptions=True)
     
     hex.rich_print()
     while True:  # winner
