@@ -186,7 +186,7 @@ class Hex:
         elif player == -1:
             return 'O'
         else:
-            return '(no one)'
+            return '(No one)'
     
 
     def get_char_player(self) -> str:
@@ -218,11 +218,11 @@ class Hex:
     @staticmethod
     def player_int_to_color(player: int) -> str:
         if player == 1:
-            return 'red'
+            return 'Red'
         elif player == -1:
-            return 'blue'
+            return 'Blue'
         else:
-            return '(no one)'
+            return '(No one)'
     
 
     def get_color_player(self) -> str:
@@ -236,11 +236,11 @@ class Hex:
     @staticmethod
     def player_int_to_rich_color(player: int) -> str:
         if player == 1:
-            return '[bold red]red[/bold red]'
+            return '[bold red]Red[/bold red]'
         elif player == -1:
-            return '[bold blue]blue[/bold blue]'
+            return '[bold blue]Blue[/bold blue]'
         else:
-            return '[bold](no one)[/bold]'
+            return '[bold](No one)[/bold]'
         
 
     def get_rich_color_player(self) -> str:
@@ -257,7 +257,7 @@ class Hex:
         Returns the action.
         """
         self.rich_print()
-        action = Prompt.ask(f'({Hex.player_int_to_rich_char(self.player)} turn) Enter row and column separated by a space')
+        action = Prompt.ask(f'({self.get_rich_color_player()} / {self.get_rich_char_player()} turn) Enter row and column separated by a space')
         row, col = action.split()
         self.play((int(row), int(col)))
         return int(row), int(col)
