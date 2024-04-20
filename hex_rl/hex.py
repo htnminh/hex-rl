@@ -145,11 +145,11 @@ class Hex:
         bold_dot = '[bold]\u22C5[/bold]'
 
         res = '    ' + '  '.join(f'[green]{i:2d}[/green]' for i in range(self.size)) + '\n\n'
-        res += '    ' + '[bold red]' + '-' * (self.size * 4 + 1) + '[/]' + '\n'
+        res += '     ' + '[bold red]' + '-' * (self.size * 4 + 1) + '[/]' + '\n'
         for i in range(self.size):
-            res += '  ' * i + f'[orange1]{i:2d}[/orange1]   [bold blue]\\\[/]'
+            res += '  ' * i + f'[orange1]{i:2d}[/orange1]    [bold blue]\\\[/]'
             for j in range(self.size):
-                if self.board[i, j] in [-1, 1]:
+                if self.board[i, j] in {1, -1}:
                     player_rich = self.player_int_to_rich_char(self.board[i, j])
                     res += f' {player_rich}  ' if j != self.size - 1 else f' {player_rich} '
                 else:
@@ -157,8 +157,8 @@ class Hex:
             if i == self.size - 1:
                 res += '[bold blue]\\\[/]\n'
             else:
-                res += '[bold blue]\\\[/]\n' + '  ' * i + f'      [bold blue]\\\[/]' + ' ' * (self.size * 4 - 1) + '[bold blue]\\\[/]\n'
-        res += '  ' * (self.size) + '    ' +  '[bold red]' + '-' * (self.size * 4 + 1) + '[/]'
+                res += '[bold blue]\\\[/]\n' + '  ' * i + f'       [bold blue]\\\[/]' + ' ' * (self.size * 4 - 1) + '[bold blue]\\\[/]\n'
+        res += '  ' * (self.size) + '     ' +  '[bold red]' + '-' * (self.size * 4 + 1) + '[/]'
 
         return res
 
