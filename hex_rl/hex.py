@@ -133,10 +133,10 @@ class Hex:
     
 
     def _print_groups(self):
-        print("First groups:")
+        print("Red / X groups:")
         for group in self._first_groups:
             print(group)
-        print("Second groups:")
+        print("Blue / O groups:")
         for group in self._second_groups:
             print(group)
 
@@ -278,7 +278,8 @@ class Hex:
                     console.print(str(e))
 
             if self.winner is not None:
-                console.print(f'{Hex.player_int_to_rich_char(self.winner)} wins!')
+                self.rich_print()
+                console.print(f'{self.get_rich_color_winner()} / {self.get_rich_char_winner()} wins!')
                 break
 
 
