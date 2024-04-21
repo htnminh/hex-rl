@@ -5,7 +5,7 @@ https://github.com/rbaltrusch/pygame_examples. Note that the repository
 is licensed under the MIT License.
 """
 
-from typing import List
+from typing import List, Optional
 from dataclasses import dataclass
 from itertools import chain
 from hex import Hex
@@ -18,7 +18,7 @@ from pyg_hexagon import HexagonTile
 
 @dataclass
 class HexagonGrid:
-    n_rows_and_cols: int = 17
+    n_rows_and_cols: Optional[int] = 11
 
     radius = 25
     colour = (220, 220, 220)
@@ -134,6 +134,6 @@ class HexagonGrid:
 
 
 if __name__ == "__main__":
-    HexagonGrid(n_rows_and_cols=8).main()
+    HexagonGrid().main()
 
 
