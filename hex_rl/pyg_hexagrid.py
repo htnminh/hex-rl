@@ -24,6 +24,7 @@ class HexagonGrid:
     colour = (220, 220, 220)
     init_position = (50, 25)
     screen_fill_colour = (200, 200, 200)
+    caption = 'Hex RL by @htnminh'
     
 
     def __post_init__(self):
@@ -99,6 +100,7 @@ class HexagonGrid:
         """Main function"""
         pygame.init()
         screen = pygame.display.set_mode(self.screen_size)
+        pygame.display.set_caption(self.caption)
         clock = pygame.time.Clock()
         hexagons = self.init_hexagons()
         # pprint.pprint(hexagons)
