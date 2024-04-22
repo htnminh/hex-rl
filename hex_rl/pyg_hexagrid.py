@@ -155,13 +155,14 @@ class HexagonGrid:
 
                 if event.type == pygame.QUIT:
                     # TODO: remove this test of capturing the screen
-                    time_str = str(datetime.datetime.now().strftime('%Y %m %d %H %M %S'))
+                    time_str = str(datetime.datetime.now().strftime('%Y %m %d'))  # %H %M %S
                     Path('hex_rl/screenshots').mkdir(parents=True, exist_ok=True)
                     pygame.image.save(screen, f'hex_rl/screenshots/{time_str}.png')
 
                     terminated = True
 
-                if event.type == pygame.MOUSEBUTTONUP:
+                if event.type == pygame.MOUSEBUTTONUP and event.button == 1:  # left click
+                    
                     for i, hexagon_row in enumerate(hexagons):
                         for j, hexagon in enumerate(hexagon_row):
                             if hexagon.collide_with_point(pygame.mouse.get_pos()):
