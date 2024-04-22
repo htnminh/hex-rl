@@ -233,6 +233,6 @@ class HexagonGrid:
 
 
 if __name__ == "__main__":
-    HexagonGrid(6).main()
+    HexagonGrid().main()
 
 
