@@ -78,10 +78,11 @@ class HexagonTile:
         """Renders the hexagon on the screen"""
         pygame.draw.polygon(screen, self.highlight_colour, self.vertices)
         pygame.draw.aalines(screen, (0, 0, 0), closed=True, points=self.vertices)
+        x, y = self.centre
         if self.player == 1:
-            pygame.draw.circle(screen, (255, 0, 0), self.centre, 0.7 * self.minimal_radius)
+            pygame.draw.circle(screen, (255, 0, 0), (x+0.75, y+0.75), 0.7 * self.radius)
         elif self.player == -1:
-            pygame.draw.circle(screen, (0, 0, 255), self.centre, 0.7 * self.minimal_radius)
+            pygame.draw.circle(screen, (0, 0, 255), (x+0.75, y+0.75), 0.7 * self.radius)
 
 
     def render_highlight(self) -> None:
