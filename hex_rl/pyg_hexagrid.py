@@ -31,6 +31,9 @@ class HexagonGrid:
 
     def __post_init__(self):
         """Initializes properties that need calculations (or not constants)"""
+        if self.n_rows_and_cols <= 5:
+            raise ValueError("n_rows_and_cols must be greater than 5. This can be changed "
+                             "in the source code, but it may cause some rendering issues.")
         self._minimal_radius = HexagonTile(
             radius=self.radius, position=(0,0), colour=(0,0,0)).minimal_radius
         self.screen_size = (
@@ -160,7 +163,7 @@ class HexagonGrid:
     def init_info_text(self, text="Hex RL by @htnminh"):
         return TextButton(
             self.screen_size[0]/2, self.screen_size[1] - 90, text=text,
-            font_size=26, text_colour=(0, 0, 0), colour=(220, 220, 220)
+            text_colour=(0, 0, 0), colour=(220, 220, 220)
         )
 
     def render_info_text(self, screen, info_text):
@@ -230,6 +233,6 @@ class HexagonGrid:
 
 
 if __name__ == "__main__":
-    HexagonGrid().main()
+    HexagonGrid(6).main()
 
 
