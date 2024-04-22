@@ -9,6 +9,8 @@ from typing import List, Optional
 from dataclasses import dataclass
 from itertools import chain
 from hex import Hex
+import datetime
+from pathlib import Path
 
 # import pprint
 
@@ -145,7 +147,6 @@ class HexagonGrid:
         # pprint.pprint(hexagons)
         terminated = False
 
-        # TODO: add core game here. check duplicate code with cli.
         hex = Hex(size=self.n_rows_and_cols, rich_exceptions=False)
         player = hex.player
 
@@ -154,7 +155,9 @@ class HexagonGrid:
 
                 if event.type == pygame.QUIT:
                     # TODO: remove this test of capturing the screen
-                    pygame.image.save(screen, "hex_rl/screenshot.png")
+                    time_str = str(datetime.datetime.now().strftime('%Y %m %d %H %M %S'))
+                    Path('hex_rl/screenshots').mkdir(parents=True, exist_ok=True)
+                    pygame.image.save(screen, f'hex_rl/screenshots/{time_str}.png')
 
                     terminated = True
 
