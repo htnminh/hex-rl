@@ -25,7 +25,7 @@ class HexagonGrid:
     radius = 25
     colour = (220, 220, 220)
     init_position = (50, 25)
-    screen_fill_colour = (200, 200, 200)
+    screen_fill_colour = (220, 220, 220)
     caption = 'Hex RL by @htnminh'
     
 
@@ -150,7 +150,13 @@ class HexagonGrid:
     def render_buttons(self, screen, buttons):
         for button in buttons:
             button.render(screen)
-    
+
+        mouse_pos = pygame.mouse.get_pos()
+        for button in buttons:
+            if button.is_collide(mouse_pos):
+                button.render_highlight()
+
+        
 
     def main(self):
         """Main function"""
@@ -161,7 +167,6 @@ class HexagonGrid:
         hexagons = self.init_hexagons()
         buttons = self.init_buttons()
         
-        # pprint.pprint(hexagons)
         terminated = False
 
         hex = Hex(size=self.n_rows_and_cols, rich_exceptions=False)
@@ -171,15 +176,9 @@ class HexagonGrid:
             for event in pygame.event.get():
 
                 if event.type == pygame.QUIT:
-                    # TODO: remove this test of capturing the screen
-                    time_str = str(datetime.datetime.now().strftime('%Y %m %d'))  # %H %M %S
-                    Path('hex_rl/screenshots').mkdir(parents=True, exist_ok=True)
-                    pygame.image.save(screen, f'hex_rl/screenshots/{time_str}.png')
-
                     terminated = True
 
-                if event.type == pygame.MOUSEBUTTONUP and event.button == 1:  # left click
-                    
+                if event.type == pygame.MOUSEBUTTONUP and event.button == 1:  # left click                    
                     for i, hexagon_row in enumerate(hexagons):
                         for j, hexagon in enumerate(hexagon_row):
                             if hexagon.collide_with_point(pygame.mouse.get_pos()):
@@ -189,7 +188,19 @@ class HexagonGrid:
                                 except Exception as e:
                                     print(e)
                                 player = hex.player
-                                break
+                                
+                    for button in buttons:
+                        if button.is_collide(pygame.mouse.get_pos()):
+                            if button.text == "Reset":
+                                print("Reset")
+                                hex = Hex(size=self.n_rows_and_cols, rich_exceptions=False)
+                                player = hex.player
+                                hexagons = self.init_hexagons()
+                            elif button.text == "Screenshot":
+                                time_str = str(datetime.datetime.now().strftime('%Y %m %d %H %M %S')) 
+                                Path('hex_rl/screenshots').mkdir(parents=True, exist_ok=True)
+                                pygame.image.save(screen, f'hex_rl/screenshots/{time_str}.png')
+                            
 
             for hexagon in self._flatten_hexagons(hexagons):
                 hexagon.update()

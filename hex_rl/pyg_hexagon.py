@@ -11,6 +11,7 @@ import math
 from dataclasses import dataclass
 from typing import List
 from typing import Tuple
+from pyg_utils import brighten_color
 
 import pygame
 
@@ -22,7 +23,7 @@ class HexagonTile:
     radius: float
     position: Tuple[float, float]
     colour: Tuple[int, ...]
-    highlight_offset: int = 3
+    highlight_offset: int = 5
     max_highlight_ticks: int = 10
 
     player = None
@@ -118,6 +119,5 @@ class HexagonTile:
     def highlight_colour(self) -> Tuple[int, ...]:
         """Colour of the hexagon tile when rendering highlight"""
         offset = self.highlight_offset * self.highlight_tick
-        brighten = lambda x, y: x + y if x + y < 255 else 255
-        return tuple(brighten(x, offset) for x in self.colour)
+        return brighten_color(self.colour, offset)
 
