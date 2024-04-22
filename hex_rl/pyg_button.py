@@ -21,7 +21,8 @@ class Button:
         self.text = self.font.render(self.text, True, self.text_colour)
         self.text_rect = self.text.get_rect(
             center = (self.x, self.y),
-            )
+        )
+
 
     def render(self, screen):
         pygame.draw.rect(screen, self.colour, self.text_rect)
@@ -35,4 +36,5 @@ class Button:
     def update(self):
         if self.is_collide(pygame.mouse.get_pos()):
             self.colour = (255, 255, 255)
-            
+        else:
+            self.colour = (180, 180, 180)

@@ -79,7 +79,7 @@ class HexagonGrid:
         return list(chain.from_iterable(hexagons))
 
 
-    def render(self, screen, hexagons):
+    def render_hexagrid(self, screen, hexagons):
         """Renders hexagons on the screen"""
         screen.fill(self.screen_fill_colour)
         for hexagon in self._flatten_hexagons(hexagons):
@@ -133,8 +133,9 @@ class HexagonGrid:
                 for j in range(1, self.n_rows_and_cols)
                 for k in [2, 3, 4]]
         )
-        
-        # buttons
+
+
+    def init_buttons(self):
         buttons = []
 
         reset_button = Button(60, self.screen_size[1] - 45, text="Reset")
@@ -142,14 +143,15 @@ class HexagonGrid:
 
         screenshot_button = Button(180, self.screen_size[1] - 45, text="Screenshot")
         buttons.append(screenshot_button)
+        
+        return buttons
 
+
+    def render_buttons(self, screen, buttons):
         for button in buttons:
             button.render(screen)
-
-
-        pygame.display.flip()
-
     
+
     def main(self):
         """Main function"""
         pygame.init()
@@ -157,6 +159,8 @@ class HexagonGrid:
         pygame.display.set_caption(self.caption)
         clock = pygame.time.Clock()
         hexagons = self.init_hexagons()
+        buttons = self.init_buttons()
+        
         # pprint.pprint(hexagons)
         terminated = False
 
@@ -189,9 +193,14 @@ class HexagonGrid:
 
             for hexagon in self._flatten_hexagons(hexagons):
                 hexagon.update()
-            
 
-            self.render(screen, hexagons)
+            for button in buttons:
+                button.update()
+
+            self.render_hexagrid(screen, hexagons)
+            self.render_buttons(screen, buttons)
+            pygame.display.flip()
+
             clock.tick(60)  # max fps
         pygame.display.quit()
 
