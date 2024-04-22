@@ -151,7 +151,11 @@ class HexagonGrid:
 
         while not terminated:
             for event in pygame.event.get():
+
                 if event.type == pygame.QUIT:
+                    # TODO: remove this test of capturing the screen
+                    pygame.image.save(screen, "hex_rl/screenshot.png")
+
                     terminated = True
 
                 if event.type == pygame.MOUSEBUTTONUP:
