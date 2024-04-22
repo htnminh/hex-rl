@@ -93,6 +93,31 @@ class HexagonGrid:
             for neighbour in hexagon.compute_neighbours(self._flatten_hexagons(hexagons)):
                 neighbour.render_highlight()
             hexagon.render_highlight()
+
+        # draw colored edges
+        mid = lambda x, y: ((x[0] + y[0]) / 2, (x[1] + y[1]) / 2)
+        upper_right_mid = mid(
+            hexagons[0][self.n_rows_and_cols - 1].vertices[5],
+            hexagons[0][self.n_rows_and_cols - 1].vertices[0])
+        lower_left_mid = mid(
+            hexagons[self.n_rows_and_cols - 1][0].vertices[2],
+            hexagons[self.n_rows_and_cols - 1][0].vertices[3])
+        pygame.draw.aalines(screen, (255, 0, 0), closed=False, points=[
+            hexagons[0][j].vertices[k]
+                for j in range(self.n_rows_and_cols - 1)
+                for k in [1, 0, 5]]
+            + [hexagons[0][self.n_rows_and_cols - 1].vertices[0]]
+            + [upper_right_mid]
+        )
+        pygame.draw.aalines(screen, (0, 0, 255), closed=False, points=[
+            upper_right_mid]
+            + [hexagons[0][self.n_rows_and_cols - 1].vertices[5]]
+            + [
+                hexagons[i][self.n_rows_and_cols - 1].vertices[k]
+                for i in range(1, self.n_rows_and_cols)
+                for k in [0, 5, 4]
+            ]
+        )
         pygame.display.flip()
 
     

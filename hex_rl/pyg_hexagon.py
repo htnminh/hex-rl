@@ -40,7 +40,14 @@ class HexagonTile:
 
 
     def compute_vertices(self) -> List[Tuple[float, float]]:
-        """Returns a list of the hexagon's vertices as x, y tuples"""
+        """
+        Returns a list of the hexagon's vertices as x, y tuples
+            0
+        1       5
+
+        2       4
+            3
+        """
         # pylint: disable=invalid-name
         x, y = self.position
         half_radius = self.radius / 2
