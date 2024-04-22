@@ -11,7 +11,7 @@ from itertools import chain
 from hex import Hex
 import datetime
 from pathlib import Path
-from pyg_button import Button
+from pyg_button import Button, TextButton
 # import pprint
 
 import pygame
@@ -35,7 +35,7 @@ class HexagonGrid:
             radius=self.radius, position=(0,0), colour=(0,0,0)).minimal_radius
         self.screen_size = (
             3   * self._minimal_radius * self.n_rows_and_cols + self.radius * 2,
-            1.5 * self.radius          * self.n_rows_and_cols + self.radius * 3 + 50
+            1.5 * self.radius          * self.n_rows_and_cols + self.radius * 3 + 100
         )
 
         
@@ -135,7 +135,7 @@ class HexagonGrid:
         )
 
 
-    def init_buttons(self):
+    def init_buttons(self, text="Hex RL by @htnminh"):
         buttons = []
 
         reset_button = Button(60, self.screen_size[1] - 45, text="Reset")
@@ -156,6 +156,15 @@ class HexagonGrid:
             if button.is_collide(mouse_pos):
                 button.render_highlight()
 
+
+    def init_info_text(self, text="Hex RL by @htnminh"):
+        return TextButton(
+            self.screen_size[0]/2, self.screen_size[1] - 90, text=text,
+            font_size=26, text_colour=(0, 0, 0), colour=(220, 220, 220)
+        )
+
+    def render_info_text(self, screen, info_text):
+        info_text.render(screen)
         
 
     def main(self):
@@ -166,6 +175,7 @@ class HexagonGrid:
         clock = pygame.time.Clock()
         hexagons = self.init_hexagons()
         buttons = self.init_buttons()
+        info_text = self.init_info_text()
         
         terminated = False
 
@@ -185,8 +195,10 @@ class HexagonGrid:
                                 try:
                                     hex.play((i, j))
                                     hexagon.play(player)
+                                    info_text = self.init_info_text()
                                 except Exception as e:
                                     print(e)
+                                    info_text = self.init_info_text(str(e))
                                 player = hex.player
                                 
                     for button in buttons:
@@ -210,6 +222,7 @@ class HexagonGrid:
 
             self.render_hexagrid(screen, hexagons)
             self.render_buttons(screen, buttons)
+            self.render_info_text(screen, info_text)
             pygame.display.flip()
 
             clock.tick(60)  # max fps

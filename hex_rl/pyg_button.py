@@ -2,6 +2,7 @@ import pygame
 from typing import Tuple
 from dataclasses import dataclass
 from pyg_utils import brighten_color
+from typing_extensions import override
 
 
 @dataclass
@@ -14,7 +15,7 @@ class Button:
     colour: Tuple[int, int, int] = (20, 100, 20)
     highlight_offset: int = 5
     max_highlight_ticks: int = 10
-    text_colour: Tuple[int, int, int] = (255, 255, 255)
+    text_colour: Tuple[int, int, int] = (230, 230, 230)
     font_size: int = 30
 
 
@@ -52,3 +53,17 @@ class Button:
         """Colour of the hexagon tile when rendering highlight"""
         offset = self.highlight_offset * self.highlight_tick
         return brighten_color(self.colour, offset)
+    
+
+@dataclass
+class TextButton(Button):
+    """Button with text only"""
+    @override
+    @property
+    def highlight_colour(self) -> Tuple[int, ...]:
+        return self.colour
+    
+
+    def update_text(self, new_text: str) -> None:
+        self.text = new_text
+    
