@@ -11,7 +11,7 @@ from itertools import chain
 from hex import Hex
 import datetime
 from pathlib import Path
-
+from pyg_button import Button
 # import pprint
 
 import pygame
@@ -34,8 +34,8 @@ class HexagonGrid:
         self._minimal_radius = HexagonTile(
             radius=self.radius, position=(0,0), colour=(0,0,0)).minimal_radius
         self.screen_size = (
-            3   * self._minimal_radius * self.n_rows_and_cols + 50,
-            1.5 * self.radius          * self.n_rows_and_cols + 75
+            3   * self._minimal_radius * self.n_rows_and_cols + self.radius * 2,
+            1.5 * self.radius          * self.n_rows_and_cols + self.radius * 3 + 50
         )
 
         
@@ -133,6 +133,19 @@ class HexagonGrid:
                 for j in range(1, self.n_rows_and_cols)
                 for k in [2, 3, 4]]
         )
+        
+        # buttons
+        buttons = []
+
+        reset_button = Button(60, self.screen_size[1] - 45, text="Reset")
+        buttons.append(reset_button)
+
+        screenshot_button = Button(180, self.screen_size[1] - 45, text="Screenshot")
+        buttons.append(screenshot_button)
+
+        for button in buttons:
+            button.render(screen)
+
 
         pygame.display.flip()
 
@@ -176,6 +189,7 @@ class HexagonGrid:
 
             for hexagon in self._flatten_hexagons(hexagons):
                 hexagon.update()
+            
 
             self.render(screen, hexagons)
             clock.tick(60)  # max fps
