@@ -3,7 +3,7 @@ import warnings
 import numpy as np
 from rich.console import Console
 from rich.prompt import Prompt
-from typing import Tuple
+from typing import Tuple, Optional
 
 
 class InvalidSizeError(Exception):
@@ -47,6 +47,7 @@ class Hex:
         rich_exceptions
             Whether to use rich exceptions or not
             Only used when raised by the CLI program
+
         Players:
              1 (first  / red  / X - CLI only) upper & lower edges
             -1 (second / blue / O - CLI only) left & right edges
@@ -132,7 +133,7 @@ class Hex:
         return groups
     
 
-    def _print_groups(self):
+    def _print_groups(self) -> None:
         print("Red / X groups:")
         for group in self._first_groups:
             print(group)
@@ -163,12 +164,12 @@ class Hex:
         return res
 
 
-    def rich_print(self) -> str:
+    def rich_print(self) -> None:
         console = Console(highlight=False)
         console.print(self.get_rich_str())
     
 
-    def check_winner(self):
+    def check_winner(self) -> Optional[int]:
         for group in self._first_groups:
             if any(tup_action[0] == 0 for tup_action in group) and \
                 any(tup_action[0] == self.size - 1 for tup_action in group):

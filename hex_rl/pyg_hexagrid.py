@@ -20,7 +20,7 @@ from pyg_hexagon import HexagonTile
 
 @dataclass
 class HexagonGrid:
-    n_rows_and_cols: Optional[int] = 11
+    size: Optional[int] = 11
 
     radius = 25
     colour = (220, 220, 220)
@@ -31,14 +31,14 @@ class HexagonGrid:
 
     def __post_init__(self):
         """Initializes properties that need calculations (or not constants)"""
-        if self.n_rows_and_cols <= 5:
+        if self.size <= 5:
             raise ValueError("n_rows_and_cols must be greater than 5. This can be changed "
                              "in the source code, but it may cause some rendering issues.")
         self._minimal_radius = HexagonTile(
             radius=self.radius, position=(0,0), colour=(0,0,0)).minimal_radius
         self.screen_size = (
-            3   * self._minimal_radius * self.n_rows_and_cols + self.radius * 2,
-            1.5 * self.radius          * self.n_rows_and_cols + self.radius * 3 + 100
+            3   * self._minimal_radius * self.size + self.radius * 2,
+            1.5 * self.radius          * self.size + self.radius * 3 + 100
         )
 
         
@@ -46,7 +46,7 @@ class HexagonGrid:
         """Creates a hexaogonal tile map of size num_x * num_y"""
         hexagon_row = []
         hexagons = []
-        for i in range(self.n_rows_and_cols):
+        for i in range(self.size):
             if i == 0:
                 leftmost_hexagon = HexagonTile(
                     radius=self.radius, position=self.init_position, colour=self.colour)
@@ -58,7 +58,7 @@ class HexagonGrid:
 
             # place hexagons to the left of leftmost hexagon, with equal y-values.
             hexagon = leftmost_hexagon
-            for j in range(1, self.n_rows_and_cols):
+            for j in range(1, self.size):
                 x, y = hexagon.position  # type: ignore
                 hexagon = HexagonTile(
                     radius=self.radius,
@@ -102,38 +102,38 @@ class HexagonGrid:
         # draw colored edges
         mid = lambda x, y: ((x[0] + y[0]) / 2, (x[1] + y[1]) / 2)
         upper_right_mid = mid(
-            hexagons[0][self.n_rows_and_cols - 1].vertices[5],
-            hexagons[0][self.n_rows_and_cols - 1].vertices[0])
+            hexagons[0][self.size - 1].vertices[5],
+            hexagons[0][self.size - 1].vertices[0])
         lower_left_mid = mid(
-            hexagons[self.n_rows_and_cols - 1][0].vertices[2],
-            hexagons[self.n_rows_and_cols - 1][0].vertices[3])
+            hexagons[self.size - 1][0].vertices[2],
+            hexagons[self.size - 1][0].vertices[3])
         pygame.draw.aalines(screen, (255, 0, 0), closed=False, points=
             [hexagons[0][j].vertices[k]
-                for j in range(self.n_rows_and_cols - 1)
+                for j in range(self.size - 1)
                 for k in [1, 0, 5]]
-            + [hexagons[0][self.n_rows_and_cols - 1].vertices[0]]
+            + [hexagons[0][self.size - 1].vertices[0]]
             + [upper_right_mid]
         )
         pygame.draw.aalines(screen, (0, 0, 255), closed=False, points=
             [upper_right_mid]
-            + [hexagons[0][self.n_rows_and_cols - 1].vertices[5]]
-            + [hexagons[i][self.n_rows_and_cols - 1].vertices[k]
-                for i in range(1, self.n_rows_and_cols)
+            + [hexagons[0][self.size - 1].vertices[5]]
+            + [hexagons[i][self.size - 1].vertices[k]
+                for i in range(1, self.size)
                 for k in [0, 5, 4]
             ]
         )
         pygame.draw.aalines(screen, (0, 0, 255), closed=False, points=
             [hexagons[i][0].vertices[k]
-                for i in range(0, self.n_rows_and_cols - 1)
+                for i in range(0, self.size - 1)
                 for k in [1, 2, 3]] 
-            + [hexagons[self.n_rows_and_cols - 1][0].vertices[2]]
+            + [hexagons[self.size - 1][0].vertices[2]]
             + [lower_left_mid]
         )
         pygame.draw.aalines(screen, (255, 0, 0), closed=False, points=
             [lower_left_mid]
-            + [hexagons[self.n_rows_and_cols - 1][0].vertices[3]]
-            + [hexagons[self.n_rows_and_cols - 1][j].vertices[k]
-                for j in range(1, self.n_rows_and_cols)
+            + [hexagons[self.size - 1][0].vertices[3]]
+            + [hexagons[self.size - 1][j].vertices[k]
+                for j in range(1, self.size)
                 for k in [2, 3, 4]]
         )
 
@@ -182,7 +182,7 @@ class HexagonGrid:
         
         terminated = False
 
-        hex = Hex(size=self.n_rows_and_cols, rich_exceptions=False)
+        hex = Hex(size=self.size, rich_exceptions=False)
         player = hex.player
 
         while not terminated:
@@ -208,7 +208,7 @@ class HexagonGrid:
                         if button.is_collide(pygame.mouse.get_pos()):
                             if button.text == "Reset":
                                 print("Reset")
-                                hex = Hex(size=self.n_rows_and_cols, rich_exceptions=False)
+                                hex = Hex(size=self.size, rich_exceptions=False)
                                 player = hex.player
                                 hexagons = self.init_hexagons()
                             elif button.text == "Screenshot":
