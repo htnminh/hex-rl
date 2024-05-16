@@ -217,15 +217,17 @@ class HexagonGrid:
                                 else:
                                     hexagon.play(player)
                                     info_text = self.init_info_text()
-                                player = hex.player
 
-                                # TODO
-                                if hex.winner is None:
-                                    action = model.predict()
-                                    hex.play(action)
-                                    winner_group = hex.get_winner_group()
-                                    hexagons[action[0]][action[1]].play(-1)
-                                    player = hex.player
+                                    # TODO: remove this if block to make it 2-player
+                                    # this block make it 1-player: 1st is player, 2nd is bot
+                                    if hex.winner is None:
+                                        action = model.predict()
+                                        hex.play(action)
+                                        winner_group = hex.get_winner_group()
+                                        hexagons[action[0]][action[1]].play(-1)
+
+                                player = hex.player
+                            
 
                                 
                     for button in buttons:
