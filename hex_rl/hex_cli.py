@@ -1,4 +1,4 @@
-from hex import Hex, InvalidActionError
+from hex_cli_api import HexCLI
 
 import typer
 from typing_extensions import Annotated
@@ -23,7 +23,7 @@ app.add_typer(play_app, name='play', help='Play (or spectate) a game of Hex in t
 def play_pvp(size: Annotated[int, typer.Option(help='Size of the board')] = 11,
              debug: Annotated[bool, typer.Option(help='Debug mode')] = False):
     """python hex_rl/hex_cli.py play pvp --size 5 --debug"""
-    Hex(size=size, rich_exceptions=True).play_pvp_cli(debug=debug)
+    HexCLI(size=size, rich_exceptions=True).play_pvp_cli(debug=debug)
 
 
 if __name__ == '__main__':

@@ -2,7 +2,6 @@ from pprint import pprint
 import warnings
 import numpy as np
 from rich.console import Console
-from rich.prompt import Prompt
 from typing import Tuple, Optional
 
 
@@ -181,6 +180,20 @@ class Hex:
         return None
     
 
+    def get_winner_group(self) -> Optional[set[tuple[int, int]]]:
+        if self.winner == 1:
+            for group in self._first_groups:
+                if any(tup_action[0] == 0 for tup_action in group) and \
+                    any(tup_action[0] == self.size - 1 for tup_action in group):
+                    return group
+        elif self.winner == -1:
+            for group in self._second_groups:
+                if any(tup_action[1] == 0 for tup_action in group) and \
+                    any(tup_action[1] == self.size - 1 for tup_action in group):
+                    return group
+        return None
+    
+
     @staticmethod
     def player_int_to_char(player: int) -> str:
         if player == 1:
@@ -252,36 +265,6 @@ class Hex:
     def get_rich_color_winner(self) -> str:
         return self.player_int_to_rich_color(self.winner)
     
-
-    def print_prompt_and_play(self) -> Tuple[int, int]:
-        """
-        Prints the board, prompts the player for an action, and plays the actions.
-        Returns the action.
-        """
-        self.rich_print()
-        action = Prompt.ask(f'({self.get_rich_color_player()} / {self.get_rich_char_player()} turn) Enter [orange1]row[/orange1] and [green]column[/green] separated by a space')
-        row, col = action.split()
-        self.play((int(row), int(col)))
-        return int(row), int(col)
-
-
-    def play_pvp_cli(self, debug=False) -> int:
-        """Play pvp in the CLI and returns the winner"""
-        console = Console(highlight=False)
-        while True:  # winner
-            while True:  # valid action
-                try:
-                    self.print_prompt_and_play()  # InvalidActionError may be raised here
-                    if debug:
-                        self._print_groups()
-                    break
-                except InvalidActionError as e:
-                    console.print(str(e))
-
-            if self.winner is not None:
-                self.rich_print()
-                console.print(f'{self.get_rich_color_winner()} / {self.get_rich_char_winner()} wins!')
-                break
 
 
 if __name__ == "__main__":

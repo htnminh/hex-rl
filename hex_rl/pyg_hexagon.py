@@ -102,6 +102,12 @@ class HexagonTile:
             self.player = player
         else:
             raise ValueError("Invalid action")  # TODO: define an exception
+        
+    
+    def mark_winner_group(self, screen) -> None:
+        x, y = self.centre
+        pygame.draw.circle(screen, (255, 255, 255), (x+0.75, y+0.75), 0.2 * self.radius)
+
 
     @property
     def centre(self) -> Tuple[float, float]:

@@ -27,6 +27,7 @@ class HexagonGrid:
     init_position = (50, 25)
     screen_fill_colour = (220, 220, 220)
     caption = 'Hex RL by @htnminh'
+    color_edge_width = 2
     
 
     def __post_init__(self):
@@ -82,7 +83,7 @@ class HexagonGrid:
         return list(chain.from_iterable(hexagons))
 
 
-    def render_hexagrid(self, screen, hexagons):
+    def render_hexagrid(self, screen, hexagons, winner_group=None):
         """Renders hexagons on the screen"""
         screen.fill(self.screen_fill_colour)
         for hexagon in self._flatten_hexagons(hexagons):
@@ -107,35 +108,43 @@ class HexagonGrid:
         lower_left_mid = mid(
             hexagons[self.size - 1][0].vertices[2],
             hexagons[self.size - 1][0].vertices[3])
-        pygame.draw.aalines(screen, (255, 0, 0), closed=False, points=
+        pygame.draw.lines(screen, (255, 0, 0), closed=False, points=
             [hexagons[0][j].vertices[k]
                 for j in range(self.size - 1)
                 for k in [1, 0, 5]]
             + [hexagons[0][self.size - 1].vertices[0]]
-            + [upper_right_mid]
+            + [upper_right_mid],
+            width=self.color_edge_width
         )
-        pygame.draw.aalines(screen, (0, 0, 255), closed=False, points=
+        pygame.draw.lines(screen, (0, 0, 255), closed=False, points=
             [upper_right_mid]
             + [hexagons[0][self.size - 1].vertices[5]]
             + [hexagons[i][self.size - 1].vertices[k]
                 for i in range(1, self.size)
                 for k in [0, 5, 4]
-            ]
+            ],
+            width=self.color_edge_width
         )
-        pygame.draw.aalines(screen, (0, 0, 255), closed=False, points=
+        pygame.draw.lines(screen, (0, 0, 255), closed=False, points=
             [hexagons[i][0].vertices[k]
                 for i in range(0, self.size - 1)
                 for k in [1, 2, 3]] 
             + [hexagons[self.size - 1][0].vertices[2]]
-            + [lower_left_mid]
+            + [lower_left_mid],
+            width=self.color_edge_width
         )
-        pygame.draw.aalines(screen, (255, 0, 0), closed=False, points=
+        pygame.draw.lines(screen, (255, 0, 0), closed=False, points=
             [lower_left_mid]
             + [hexagons[self.size - 1][0].vertices[3]]
             + [hexagons[self.size - 1][j].vertices[k]
                 for j in range(1, self.size)
-                for k in [2, 3, 4]]
+                for k in [2, 3, 4]],
+            width=self.color_edge_width
         )
+
+        if winner_group is not None:
+            for i, j in winner_group:
+                hexagons[i][j].mark_winner_group(screen)
 
 
     def init_buttons(self, text="Hex RL by @htnminh"):
@@ -184,6 +193,7 @@ class HexagonGrid:
 
         hex = Hex(size=self.size, rich_exceptions=False)
         player = hex.player
+        winner_group = None
 
         while not terminated:
             for event in pygame.event.get():
@@ -197,11 +207,13 @@ class HexagonGrid:
                             if hexagon.collide_with_point(pygame.mouse.get_pos()):
                                 try:
                                     hex.play((i, j))
-                                    hexagon.play(player)
-                                    info_text = self.init_info_text()
+                                    winner_group = hex.get_winner_group()
                                 except Exception as e:
                                     print(e)
                                     info_text = self.init_info_text(str(e))
+                                else:
+                                    hexagon.play(player)
+                                    info_text = self.init_info_text()
                                 player = hex.player
                                 
                     for button in buttons:
@@ -210,6 +222,7 @@ class HexagonGrid:
                                 print("Reset")
                                 hex = Hex(size=self.size, rich_exceptions=False)
                                 player = hex.player
+                                winner_group = None
                                 hexagons = self.init_hexagons()
                             elif button.text == "Screenshot":
                                 time_str = str(datetime.datetime.now().strftime('%Y %m %d %H %M %S')) 
@@ -223,7 +236,7 @@ class HexagonGrid:
             for button in buttons:
                 button.update()
 
-            self.render_hexagrid(screen, hexagons)
+            self.render_hexagrid(screen, hexagons, winner_group)
             self.render_buttons(screen, buttons)
             self.render_info_text(screen, info_text)
             pygame.display.flip()
