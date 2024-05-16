@@ -16,6 +16,7 @@ from pyg_button import Button, TextButton
 
 import pygame
 from pyg_hexagon import HexagonTile
+from model_random import RandomModel
 
 
 @dataclass
@@ -147,7 +148,7 @@ class HexagonGrid:
                 hexagons[i][j].mark_winner_group(screen)
 
 
-    def init_buttons(self, text="Hex RL by @htnminh"):
+    def init_buttons(self, text="Hex RL by @htnminh") -> List[Button]:
         buttons = []
 
         reset_button = Button(60, self.screen_size[1] - 45, text="Reset")
@@ -194,6 +195,8 @@ class HexagonGrid:
         hex = Hex(size=self.size, rich_exceptions=False)
         player = hex.player
         winner_group = None
+        # TODO
+        model = RandomModel(hex.board)
 
         while not terminated:
             for event in pygame.event.get():
@@ -215,6 +218,15 @@ class HexagonGrid:
                                     hexagon.play(player)
                                     info_text = self.init_info_text()
                                 player = hex.player
+
+                                # TODO
+                                if hex.winner is None:
+                                    action = model.predict()
+                                    hex.play(action)
+                                    winner_group = hex.get_winner_group()
+                                    hexagons[action[0]][action[1]].play(-1)
+                                    player = hex.player
+
                                 
                     for button in buttons:
                         if button.is_collide(pygame.mouse.get_pos()):
