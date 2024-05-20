@@ -17,7 +17,10 @@ from pyg_button import Button, TextButton
 import pygame
 from pyg_hexagon import HexagonTile
 from model_random import RandomModel
+import time
 
+
+RANDOM_MODEL_DELAY_TIME = 0.5
 
 @dataclass
 class HexagonGrid:
@@ -197,7 +200,7 @@ class HexagonGrid:
         terminated = False
 
         hex = Hex(size=self.size, rich_exceptions=False)
-        player = hex.player
+        curr_player = hex.player
         winner_group = None
         # TODO
         if self.agent == "random":
@@ -205,15 +208,28 @@ class HexagonGrid:
         # TODO
         # agent make the first move
         if self.mode[0] == "a":  # avp ava
-            curr_player = hex.player
             action = model.predict(hex.board)
             hex.play(action)
             winner_group = hex.get_winner_group()
-            hexagons[action[0]][action[1]].play(1)
-
-            player = hex.player
+            hexagons[action[0]][action[1]].play(curr_player)
+            curr_player = hex.player
+        
 
         while not terminated:
+            # if no player is involved
+            if self.mode == 'ava':
+                while True:
+                    if hex.winner is None:
+                        # if pygame.time.get_ticks() % (DELAY_TIME * 1000) == 0:
+                            curr_player = hex.player
+                            action = model.predict(hex.board)
+                            time.sleep(RANDOM_MODEL_DELAY_TIME)
+                            hex.play(action)
+                            winner_group = hex.get_winner_group()
+                            hexagons[action[0]][action[1]].play(curr_player)
+                    else:
+                        break
+
             for event in pygame.event.get():
 
                 if event.type == pygame.QUIT:
@@ -227,46 +243,39 @@ class HexagonGrid:
                                 if hexagon.collide_with_point(pygame.mouse.get_pos()):
                                     try:
                                         hex.play((i, j))
-                                        winner_group = hex.get_winner_group()
                                     except Exception as e:
                                         print(e)
                                         info_text = self.init_info_text(str(e))
                                     else:
-                                        hexagon.play(player)
+                                        winner_group = hex.get_winner_group()
+                                        hexagon.play(curr_player)
+                                        curr_player = hex.player
                                         info_text = self.init_info_text()
 
                                         # TODO
                                         if self.mode != 'pvp':  # if an agent is involved
                                             if hex.winner is None:
-                                                curr_player = hex.player
                                                 action = model.predict(hex.board)
+                                                time.sleep(RANDOM_MODEL_DELAY_TIME)  # TODO
                                                 hex.play(action)
                                                 winner_group = hex.get_winner_group()
                                                 hexagons[action[0]][action[1]].play(curr_player)
 
-                                    player = hex.player
-                else:  # if no player is involved
-                    if hex.winner is None:
-                        curr_player = hex.player
-                        action = model.predict(hex.board)
-                        hex.play(action)
-                        winner_group = hex.get_winner_group()
-                        hexagons[action[0]][action[1]].play(curr_player)
+                                    curr_player = hex.player
 
 
-
-                    for button in buttons:
-                        if button.is_collide(pygame.mouse.get_pos()):
-                            if button.text == "Reset":
-                                print("Reset")
-                                hex = Hex(size=self.size, rich_exceptions=False)
-                                player = hex.player
-                                winner_group = None
-                                hexagons = self.init_hexagons()
-                            elif button.text == "Screenshot":
-                                time_str = str(datetime.datetime.now().strftime('%Y %m %d %H %M %S')) 
-                                Path('hex_rl/screenshots').mkdir(parents=True, exist_ok=True)
-                                pygame.image.save(screen, f'hex_rl/screenshots/{time_str}.png')
+                        for button in buttons:
+                            if button.is_collide(pygame.mouse.get_pos()):
+                                if button.text == "Reset":
+                                    print("Reset")
+                                    hex = Hex(size=self.size, rich_exceptions=False)
+                                    curr_player = hex.player
+                                    winner_group = None
+                                    hexagons = self.init_hexagons()
+                                elif button.text == "Screenshot":
+                                    time_str = str(datetime.datetime.now().strftime('%Y %m %d %H %M %S')) 
+                                    Path('hex_rl/screenshots').mkdir(parents=True, exist_ok=True)
+                                    pygame.image.save(screen, f'hex_rl/screenshots/{time_str}.png')
                             
 
             for hexagon in self._flatten_hexagons(hexagons):
