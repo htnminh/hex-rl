@@ -7,19 +7,9 @@ root.title("HexRL Main Menu")
 # root.geometry("300x800")
 
 
-def update_all_agent_options():
-    selected_mode = mode_str_var.get()
-    state_1 = 'normal' if selected_mode[0] == 'a' else 'disabled'
-    state_2 = 'normal' if selected_mode[2] == 'a' else 'disabled'
-    for agent_radio_button in agent_radio_buttons_1:
-        agent_radio_button.config(state=state_1)
-    for agent_radio_button in agent_radio_buttons_2:
-        agent_radio_button.config(state=state_2)
-
-
 # board size selection: row 0 to 4
-s = Label(root, text="Board Size", font=(None, 11))
-s.grid(row=0, column=0, columnspan=2)
+s = Label(root, text="Board size", font=(None, 11))
+s.grid(row=0, column=0, columnspan=2, pady=5)
 
 board_size_str_var = StringVar(root, "11")
 board_size_values = [
@@ -42,15 +32,24 @@ for i, (text, mode) in enumerate(board_size_values[4:]):
 
 # mode selection: row 5 to 9
 m = Label(root, text="Mode", font=(None, 11))
-m.grid(row=5, column=0, columnspan=2)
+m.grid(row=5, column=0, columnspan=2, pady=5)
 
 mode_str_var = StringVar(root, "pvp")
 mode_values = [
-    ("Player vs Player", "pvp"),
-    ("Player vs Agent", "pva"),
-    ("Agent vs Player", "avp"),
-    ("Agent vs Agent", "ava")
+    ("Player vs. Player", "pvp"),
+    ("Player vs. Agent", "pva"),
+    ("Agent vs. Player", "avp"),
+    ("Agent vs. Agent", "ava")
 ]
+
+def update_all_agent_options():
+    selected_mode = mode_str_var.get()
+    state_1 = 'normal' if selected_mode[0] == 'a' else 'disabled'
+    state_2 = 'normal' if selected_mode[2] == 'a' else 'disabled'
+    for agent_radio_button in agent_radio_buttons_1:
+        agent_radio_button.config(state=state_1)
+    for agent_radio_button in agent_radio_buttons_2:
+        agent_radio_button.config(state=state_2)
 
 for i, (text, mode) in enumerate(mode_values):
     Radiobutton(root, text=text, variable=mode_str_var, value=mode, command=update_all_agent_options
@@ -58,8 +57,8 @@ for i, (text, mode) in enumerate(mode_values):
     )
 
 # bot selection: row 10 to 20 (assume 10 agents)
-b = Label(root, text="Agent", font=(None, 12))
-b.grid(row=10, column=0, columnspan=2)
+b = Label(root, text="Agent", font=(None, 11))
+b.grid(row=10, column=0, columnspan=2, pady=5)
 
 agent_str_var = StringVar(root, "random")
 values = [
@@ -89,20 +88,20 @@ for i, (text, mode) in enumerate(values):
 
 
 
-# # play button
-# def play():
-#     size = int(board_size_str_var.get())
-#     mode = mode_str_var.get()
-#     agent = agent_str_var.get()
+# play button
+def play():
+    size = int(board_size_str_var.get())
+    mode = mode_str_var.get()
+    agent = agent_str_var.get()
 
-#     print(board_size_str_var.get(), mode_str_var.get(), agent_str_var.get())
+    print(board_size_str_var.get(), mode_str_var.get(), agent_str_var.get())
     
-#     root.destroy()
+    root.destroy()
 
-#     HexagonGrid(size=size, mode=mode, agent=agent)
+    HexagonGrid(size=size, mode=mode, agent=agent)
     
 
-# play_button = Button(root, text="Play", command=play)
-# play_button.grid()
+play_button = Button(root, text="Play", command=play)
+play_button.grid(row=21, column=0, columnspan=2, pady=10)
 
 root.mainloop()

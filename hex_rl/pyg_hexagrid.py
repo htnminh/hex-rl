@@ -201,7 +201,17 @@ class HexagonGrid:
         winner_group = None
         # TODO
         if self.agent == "random":
-            model = RandomModel(hex.board)
+            model = RandomModel()
+        # TODO
+        # agent make the first move
+        if self.mode[0] == "a":  # avp ava
+            curr_player = hex.player
+            action = model.predict(hex.board)
+            hex.play(action)
+            winner_group = hex.get_winner_group()
+            hexagons[action[0]][action[1]].play(1)
+
+            player = hex.player
 
         while not terminated:
             for event in pygame.event.get():
@@ -209,32 +219,42 @@ class HexagonGrid:
                 if event.type == pygame.QUIT:
                     terminated = True
 
-                if event.type == pygame.MOUSEBUTTONUP and event.button == 1:  # left click                    
-                    for i, hexagon_row in enumerate(hexagons):
-                        for j, hexagon in enumerate(hexagon_row):
-                            if hexagon.collide_with_point(pygame.mouse.get_pos()):
-                                try:
-                                    hex.play((i, j))
-                                    winner_group = hex.get_winner_group()
-                                except Exception as e:
-                                    print(e)
-                                    info_text = self.init_info_text(str(e))
-                                else:
-                                    hexagon.play(player)
-                                    info_text = self.init_info_text()
-
-                                    # TODO: remove this if block to make it 2-player
-                                    # this block make it 1-player: 1st is player, 2nd is bot
-                                    if hex.winner is None:
-                                        action = model.predict()
-                                        hex.play(action)
+                # TODO
+                if self.mode != 'ava':  # only if a player is involved
+                    if event.type == pygame.MOUSEBUTTONUP and event.button == 1:  # left click                    
+                        for i, hexagon_row in enumerate(hexagons):
+                            for j, hexagon in enumerate(hexagon_row):
+                                if hexagon.collide_with_point(pygame.mouse.get_pos()):
+                                    try:
+                                        hex.play((i, j))
                                         winner_group = hex.get_winner_group()
-                                        hexagons[action[0]][action[1]].play(-1)
+                                    except Exception as e:
+                                        print(e)
+                                        info_text = self.init_info_text(str(e))
+                                    else:
+                                        hexagon.play(player)
+                                        info_text = self.init_info_text()
 
-                                player = hex.player
-                            
+                                        # TODO
+                                        if self.mode != 'pvp':  # if an agent is involved
+                                            if hex.winner is None:
+                                                curr_player = hex.player
+                                                action = model.predict(hex.board)
+                                                hex.play(action)
+                                                winner_group = hex.get_winner_group()
+                                                hexagons[action[0]][action[1]].play(curr_player)
 
-                                
+                                    player = hex.player
+                else:  # if no player is involved
+                    if hex.winner is None:
+                        curr_player = hex.player
+                        action = model.predict(hex.board)
+                        hex.play(action)
+                        winner_group = hex.get_winner_group()
+                        hexagons[action[0]][action[1]].play(curr_player)
+
+
+
                     for button in buttons:
                         if button.is_collide(pygame.mouse.get_pos()):
                             if button.text == "Reset":
@@ -265,6 +285,6 @@ class HexagonGrid:
 
 
 if __name__ == "__main__":
-    HexagonGrid().main()
+    HexagonGrid(mode='ava').main()
 
 
