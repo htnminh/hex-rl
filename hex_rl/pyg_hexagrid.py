@@ -20,7 +20,7 @@ from model_random import RandomModel
 import time
 
 
-RANDOM_MODEL_DELAY_TIME = 0.1
+RANDOM_MODEL_DELAY_TIME = 0.5
 
 @dataclass
 class HexagonGrid:
@@ -234,14 +234,18 @@ class HexagonGrid:
             if self.mode == 'ava':
                 while True:
                     if hex.winner is None:
-                        # if pygame.time.get_ticks() % (DELAY_TIME * 1000) == 0:
-                            curr_player = hex.player
-                            action = model.predict(hex.board)
-                            time.sleep(RANDOM_MODEL_DELAY_TIME)
-                            hex.play(action)
-                            winner_group = hex.get_winner_group()
-                            hexagons[action[0]][action[1]].play(curr_player)
-                            # pygame.display.flip()
+                        curr_player = hex.player
+                        action = model.predict(hex.board)
+                        time.sleep(RANDOM_MODEL_DELAY_TIME)
+                        hex.play(action)
+                        winner_group = hex.get_winner_group()
+                        hexagons[action[0]][action[1]].play(curr_player)
+
+                        # TODO: refactor repetitive code
+                        self.render_hexagrid(screen, hexagons, winner_group)
+                        self.render_buttons(screen, buttons)
+                        self.render_info_text(screen, info_text)
+                        pygame.display.flip()
                     else:
                         break
 
@@ -264,7 +268,13 @@ class HexagonGrid:
                                     else:
                                         winner_group = hex.get_winner_group()
                                         hexagon.play(curr_player)
-                                        # pygame.display.flip()
+
+                                        # TODO: refactor repetitive code
+                                        self.render_hexagrid(screen, hexagons, winner_group)
+                                        self.render_buttons(screen, buttons)
+                                        self.render_info_text(screen, info_text)
+                                        pygame.display.flip()
+
                                         curr_player = hex.player
                                         info_text = self.init_info_text()
 
@@ -276,7 +286,12 @@ class HexagonGrid:
                                                 hex.play(action)
                                                 winner_group = hex.get_winner_group()
                                                 hexagons[action[0]][action[1]].play(curr_player)
-                                                # pygame.display.flip()
+                                                
+                                                # TODO: refactor repetitive code
+                                                self.render_hexagrid(screen, hexagons, winner_group)
+                                                self.render_buttons(screen, buttons)
+                                                self.render_info_text(screen, info_text)
+                                                pygame.display.flip()
 
                                     curr_player = hex.player
 
@@ -294,12 +309,11 @@ class HexagonGrid:
                                     Path('hex_rl/screenshots').mkdir(parents=True, exist_ok=True)
                                     pygame.image.save(screen, f'hex_rl/screenshots/{time_str}.png')
                             
-
             
         pygame.display.quit()
 
 
 if __name__ == "__main__":
-    HexagonGrid(mode='ava').main()
+    HexagonGrid(mode='pva').main()
 
 

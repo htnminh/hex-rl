@@ -60,7 +60,8 @@ for i, (text, mode) in enumerate(mode_values):
 b = Label(root, text="Agent", font=(None, 11))
 b.grid(row=10, column=0, columnspan=2, pady=5)
 
-agent_str_var = StringVar(root, "random")
+agent_str_var_1 = StringVar(root, "random")
+agent_str_var_2 = StringVar(root, "random")
 values = [
     ("Random", "random"),
     ("Q-Learning", "qlearning"),
@@ -76,13 +77,13 @@ values = [
 
 agent_radio_buttons_1 = []
 for i, (text, mode) in enumerate(values):
-    agent_radio_button = Radiobutton(root, text=text, variable=agent_str_var, value=mode, state='disabled')
+    agent_radio_button = Radiobutton(root, text=text, variable=agent_str_var_1, value=mode, state='disabled')
     agent_radio_button.grid(row=i+11, column=0, sticky='w')
     agent_radio_buttons_1.append(agent_radio_button)
 
 agent_radio_buttons_2 = []
 for i, (text, mode) in enumerate(values):
-    agent_radio_button = Radiobutton(root, text=text, variable=agent_str_var, value=mode, state='disabled')
+    agent_radio_button = Radiobutton(root, text=text, variable=agent_str_var_2, value=mode, state='disabled')
     agent_radio_button.grid(row=i+11, column=1, sticky='w')
     agent_radio_buttons_2.append(agent_radio_button)
 
@@ -92,13 +93,13 @@ for i, (text, mode) in enumerate(values):
 def play():
     size = int(board_size_str_var.get())
     mode = mode_str_var.get()
-    agent = agent_str_var.get()
+    agent = agent_str_var_1.get()
 
-    print(board_size_str_var.get(), mode_str_var.get(), agent_str_var.get())
+    print(board_size_str_var.get(), mode_str_var.get(), agent_str_var_1.get())
     
     root.destroy()
 
-    HexagonGrid(size=size, mode=mode, agent=agent)
+    HexagonGrid(size=size, mode=mode, agent=agent).main()
     
 
 play_button = Button(root, text="Play", command=play)
