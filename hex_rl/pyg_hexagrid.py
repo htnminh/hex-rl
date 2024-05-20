@@ -22,6 +22,8 @@ from model_random import RandomModel
 @dataclass
 class HexagonGrid:
     size: Optional[int] = 11
+    mode: Optional[str] = "pvp"
+    agent: Optional[str] = "random"
 
     radius = 25
     colour = (220, 220, 220)
@@ -42,6 +44,8 @@ class HexagonGrid:
             3   * self._minimal_radius * self.size + self.radius * 2,
             1.5 * self.radius          * self.size + self.radius * 3 + 100
         )
+        if self.mode not in ["pvp", "pva", "avp", "ava"]:
+            raise ValueError("Mode must be one of 'pvp', 'pva', 'avp', or 'ava'")
 
         
     def init_hexagons(self) -> List[List[HexagonTile]]:
@@ -196,7 +200,8 @@ class HexagonGrid:
         player = hex.player
         winner_group = None
         # TODO
-        model = RandomModel(hex.board)
+        if self.agent == "random":
+            model = RandomModel(hex.board)
 
         while not terminated:
             for event in pygame.event.get():
