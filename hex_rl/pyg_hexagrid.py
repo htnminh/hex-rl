@@ -20,7 +20,7 @@ from model_random import RandomModel
 import time
 
 
-RANDOM_MODEL_DELAY_TIME = 0.5
+RANDOM_MODEL_DELAY_TIME = 0.1
 
 @dataclass
 class HexagonGrid:
@@ -158,8 +158,8 @@ class HexagonGrid:
     def init_buttons(self, text="Hex RL by @htnminh") -> List[Button]:
         buttons = []
 
-        reset_button = Button(60, self.screen_size[1] - 45, text="Reset")
-        buttons.append(reset_button)
+        return_button = Button(60, self.screen_size[1] - 45, text="Return")
+        buttons.append(return_button)
 
         screenshot_button = Button(180, self.screen_size[1] - 45, text="Screenshot")
         buttons.append(screenshot_button)
@@ -198,6 +198,7 @@ class HexagonGrid:
         info_text = self.init_info_text()
         
         terminated = False
+        returned = False
 
         hex = Hex(size=self.size, rich_exceptions=False)
         curr_player = hex.player
@@ -298,19 +299,29 @@ class HexagonGrid:
 
                         for button in buttons:
                             if button.is_collide(pygame.mouse.get_pos()):
-                                if button.text == "Reset":
-                                    print("Reset")
-                                    hex = Hex(size=self.size, rich_exceptions=False)
-                                    curr_player = hex.player
-                                    winner_group = None
-                                    hexagons = self.init_hexagons()
+                                if button.text == "Return":
+                                    print("Return")
+                                    # hex = Hex(size=self.size, rich_exceptions=False)
+                                    # curr_player = hex.player
+                                    # winner_group = None
+                                    # hexagons = self.init_hexagons()
+                                    returned = True
+                                    terminated = True
+
                                 elif button.text == "Screenshot":
                                     time_str = str(datetime.datetime.now().strftime('%Y %m %d %H %M %S')) 
                                     Path('hex_rl/screenshots').mkdir(parents=True, exist_ok=True)
                                     pygame.image.save(screen, f'hex_rl/screenshots/{time_str}.png')
                             
-            
+
         pygame.display.quit()
+
+        if returned:
+            import subprocess
+            import os
+            path = os.path.dirname(os.path.abspath(__file__))
+            path = os.path.join(path, 'tk_mainmenu.py')
+            subprocess.run(["python", path])
 
 
 if __name__ == "__main__":
