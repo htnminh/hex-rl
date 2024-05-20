@@ -20,7 +20,7 @@ from model_random import RandomModel
 import time
 
 
-RANDOM_MODEL_DELAY_TIME = 0.5
+RANDOM_MODEL_DELAY_TIME = 0.1
 
 @dataclass
 class HexagonGrid:
@@ -216,6 +216,20 @@ class HexagonGrid:
         
 
         while not terminated:
+            for hexagon in self._flatten_hexagons(hexagons):
+                hexagon.update()
+
+            for button in buttons:
+                button.update()
+
+            self.render_hexagrid(screen, hexagons, winner_group)
+            self.render_buttons(screen, buttons)
+            self.render_info_text(screen, info_text)
+            pygame.display.flip()
+
+            clock.tick(60)  # max fps
+
+
             # if no player is involved
             if self.mode == 'ava':
                 while True:
@@ -227,6 +241,7 @@ class HexagonGrid:
                             hex.play(action)
                             winner_group = hex.get_winner_group()
                             hexagons[action[0]][action[1]].play(curr_player)
+                            # pygame.display.flip()
                     else:
                         break
 
@@ -249,6 +264,7 @@ class HexagonGrid:
                                     else:
                                         winner_group = hex.get_winner_group()
                                         hexagon.play(curr_player)
+                                        # pygame.display.flip()
                                         curr_player = hex.player
                                         info_text = self.init_info_text()
 
@@ -260,6 +276,7 @@ class HexagonGrid:
                                                 hex.play(action)
                                                 winner_group = hex.get_winner_group()
                                                 hexagons[action[0]][action[1]].play(curr_player)
+                                                # pygame.display.flip()
 
                                     curr_player = hex.player
 
@@ -278,18 +295,7 @@ class HexagonGrid:
                                     pygame.image.save(screen, f'hex_rl/screenshots/{time_str}.png')
                             
 
-            for hexagon in self._flatten_hexagons(hexagons):
-                hexagon.update()
-
-            for button in buttons:
-                button.update()
-
-            self.render_hexagrid(screen, hexagons, winner_group)
-            self.render_buttons(screen, buttons)
-            self.render_info_text(screen, info_text)
-            pygame.display.flip()
-
-            clock.tick(60)  # max fps
+            
         pygame.display.quit()
 
 
