@@ -38,8 +38,8 @@ class HexagonGrid:
 
     def __post_init__(self):
         """Initializes properties that need calculations (or not constants)"""
-        if self.size <= 5:
-            raise ValueError("n_rows_and_cols must be greater than 5. This can be changed "
+        if self.size <= 4:
+            raise ValueError("n_rows_and_cols must be greater than 4. This can be changed "
                              "in the source code, but it may cause some rendering issues.")
         self._minimal_radius = HexagonTile(
             radius=self.radius, position=(0,0), colour=(0,0,0)).minimal_radius

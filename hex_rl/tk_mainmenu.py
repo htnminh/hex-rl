@@ -34,7 +34,7 @@ for i, (text, mode) in enumerate(board_size_values[4:]):
 m = Label(root, text="Mode", font=(None, 11))
 m.grid(row=5, column=0, columnspan=2, pady=5)
 
-mode_str_var = StringVar(root, "pvp")
+mode_str_var = StringVar(root, "pva")
 mode_values = [
     ("Player vs. Player", "pvp"),
     ("Player vs. Agent", "pva"),
@@ -87,7 +87,7 @@ for i, (text, mode) in enumerate(values):
     agent_radio_button.grid(row=i+11, column=1, sticky='w')
     agent_radio_buttons_2.append(agent_radio_button)
 
-
+update_all_agent_options()
 
 # play button
 def play():
