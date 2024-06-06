@@ -58,6 +58,12 @@ class Hex:
             warnings.warn(f"The game is traditionally played on odd-sized board, got even size {size}")
 
         self.size = size
+        self.rich_exceptions = rich_exceptions
+
+        self.reset()
+
+
+    def reset(self) -> None:
         self.board = self.init_board()
         self.player = 1
         self.winner = None
@@ -65,9 +71,7 @@ class Hex:
         self._first_groups: list[set[tuple[int, int]]] = list()
         self._second_groups: list[set[tuple[int, int]]] = list()
 
-        self.rich_exceptions = rich_exceptions
-
-
+    
     def init_board(self) -> np.ndarray:
         return np.zeros((self.size, self.size), dtype=int)
     
