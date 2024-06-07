@@ -25,3 +25,4 @@ l.remove({(0, 1)})
 print(l)
 
 print((0,0) in {(0,0)})
+
