@@ -198,6 +198,12 @@ class Hex:
         return None
     
 
+    def inverse(self) -> None:
+        self.board = np.rot90(np.transpose(self.board * -1), k=2)
+        self.player *= -1
+        self._first_groups, self._second_groups = self._second_groups, self._first_groups
+
+
     @staticmethod
     def player_int_to_char(player: int) -> str:
         if player == 1:
