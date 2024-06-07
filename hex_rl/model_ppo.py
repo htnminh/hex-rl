@@ -23,12 +23,14 @@ class HexEnv(gym.Env):
     def step(self, action):
         # observation, reward, terminated, truncated, info 
         curr_player = self.hex.player
+        print(curr_player)
         row, col = divmod(action, self.hex.size)
         try:
             self.hex.play((row, col))
+            self.hex.inverse()
             
         except InvalidActionError:  # Invalid move
-            return self.hex.board, -10, False, False, {}  
+            return self.hex.board, -5, False, False, {}  
 
 
         if self.hex.winner == curr_player:
@@ -55,7 +57,7 @@ env = HexEnv(hex=Hex(size=5))
 model = PPO("MlpPolicy", env, verbose=1)
 
 # Train the agent
-model.learn(total_timesteps=10000)
+model.learn(total_timesteps=1_000_000)
 
 # Save the model
 model.save("ppo_hex")
