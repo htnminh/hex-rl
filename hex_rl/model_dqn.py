@@ -16,7 +16,6 @@ from model_random import RandomModel
 
 
 
-
 class HexEnv(gym.Env):
     def __init__(self, hex: Hex, old_version: Optional[DQN] = None):
         """old_version: the old version of the model"""
@@ -76,7 +75,6 @@ class HexEnv(gym.Env):
 
 
 
-
 class CustomCNN(BaseFeaturesExtractor):
     def __init__(self, observation_space, features_dim=128):
         super(CustomCNN, self).__init__(observation_space, features_dim)
@@ -94,20 +92,7 @@ class CustomCNN(BaseFeaturesExtractor):
         return self.cnn(observations)
 
 
-# Create the environment
-env = HexEnv(hex=Hex(size=5))
-check_env(env)
 
-# Instantiate the PPO agent
-# model = DQN("CnnPolicy", env, verbose=1)
-model = DQN("MlpPolicy", env, verbose=1, policy_kwargs={'features_extractor_class': CustomCNN})
-
-# Train the agent
-# # model.learn(total_timesteps=1_000_000)
-# model.learn(total_timesteps=100_000)
-
-# # Save the model
-# model.save("dqn_hex")
 
 
 def predict_q(obs, model):
@@ -130,31 +115,46 @@ def predict_action(obs, model):
         # print(obs[0, row, col])
         if obs[0, row, col] == 0:
             return i
-        
 
-loaded_model = DQN.load("dqn_hex")
-obs, _ = env.reset()
+if __name__ == "__main__":      
+    # Create the environment
+    env = HexEnv(hex=Hex(size=5))
+    check_env(env)
+
+    # Instantiate the PPO agent
+    # model = DQN("CnnPolicy", env, verbose=1)
+    model = DQN("MlpPolicy", env, verbose=1, policy_kwargs={'features_extractor_class': CustomCNN})
+
+    # Train the agent
+    # # model.learn(total_timesteps=1_000_000)
+    # model.learn(total_timesteps=100_000)
+
+    # # Save the model
+    # model.save("dqn_hex")
+
+    loaded_model = DQN.load("dqn_hex")
+    obs, _ = env.reset()
 
 
-while True:
-    action = predict_action(obs, loaded_model)
-    obs, _, done, _, _ = env.step(action, inverse=False)
-    env.render()
-    if done:
-        break
+    while True:
+        action = predict_action(obs, loaded_model)
+        obs, _, done, _, _ = env.step(action, inverse=False)
+        env.render()
+        if done:
+            break
 
-# print(predict_q(obs, loaded_model))
-# print(predict_action(obs, loaded_model))
-# env.render()
+    # print(predict_q(obs, loaded_model))
+    # print(predict_action(obs, loaded_model))
+    # env.render()
 
-# obs, _, _, _, _ = env.step(3)
-# print(predict_q(obs, loaded_model))
-# env.render()
+    # obs, _, _, _, _ = env.step(3)
+    # print(predict_q(obs, loaded_model))
+    # env.render()
 
-# obs, _, _, _, _ = env.step(4)
-# print(predict_q(obs, loaded_model))
-# env.render()
+    # obs, _, _, _, _ = env.step(4)
+    # print(predict_q(obs, loaded_model))
+    # env.render()
 
-# obs, _, _, _, _ = env.step(5)
-# print(predict_q(obs, loaded_model))
-# env.render()
+    # obs, _, _, _, _ = env.step(5)
+    # print(predict_q(obs, loaded_model))
+    # env.render()
