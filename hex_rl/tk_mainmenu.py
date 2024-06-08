@@ -64,7 +64,7 @@ agent_str_var_1 = StringVar(root, "random")
 agent_str_var_2 = StringVar(root, "random")
 values = [
     ("Random", "random"),
-    ("Q-Learning", "qlearning"),
+    ("Deep Q-Learning", "dqn"),
     ("Agent 3", "agent3"),
     ("Agent 4", "agent4"),
     ("Agent 5", "agent5"),
@@ -93,13 +93,14 @@ update_all_agent_options()
 def play():
     size = int(board_size_str_var.get())
     mode = mode_str_var.get()
-    agent = agent_str_var_1.get()
+    agent_1 = agent_str_var_1.get()
+    agent_2 = agent_str_var_2.get()
 
-    print(board_size_str_var.get(), mode_str_var.get(), agent_str_var_1.get())
+    print(board_size_str_var.get(), mode_str_var.get(), agent_str_var_1.get(), agent_str_var_2.get())
     
     root.destroy()
 
-    HexagonGrid(size=size, mode=mode, agent=agent).main()
+    HexagonGrid(size=size, mode=mode, agent_1=agent_1, agent_2=agent_2).main()
     
 
 play_button = Button(root, text="Play", command=play)

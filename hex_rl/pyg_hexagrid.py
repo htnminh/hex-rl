@@ -20,13 +20,14 @@ from model_random import RandomModel
 import time
 
 
-RANDOM_MODEL_DELAY_TIME = 0.1
+RANDOM_MODEL_DELAY_TIME = 0
 
 @dataclass
 class HexagonGrid:
     size: Optional[int] = 11
     mode: Optional[str] = "pvp"
-    agent: Optional[str] = "random"
+    agent_1: Optional[str] = "random"
+    agent_2: Optional[str] = "random"
 
     radius = 25
     colour = (220, 220, 220)
@@ -204,12 +205,16 @@ class HexagonGrid:
         curr_player = hex.player
         winner_group = None
         # TODO
-        if self.agent == "random":
-            model = RandomModel()
+        if self.agent_1 == "random":
+            model_1 = RandomModel()
+
+        if self.agent_2 == "random":
+            model_2 = RandomModel()
+
         # TODO
-        # agent make the first move
+        # agent_1 make the first move
         if self.mode[0] == "a":  # avp ava
-            action = model.predict(hex.board)
+            action = model_1.predict(hex.board)
             hex.play(action)
             winner_group = hex.get_winner_group()
             hexagons[action[0]][action[1]].play(curr_player)
@@ -235,12 +240,16 @@ class HexagonGrid:
             if self.mode == 'ava':
                 while True:
                     if hex.winner is None:
-                        curr_player = hex.player
+                        if curr_player == 1:
+                            model = model_1
+                        else:
+                            model = model_2
                         action = model.predict(hex.board)
                         time.sleep(RANDOM_MODEL_DELAY_TIME)
                         hex.play(action)
                         winner_group = hex.get_winner_group()
                         hexagons[action[0]][action[1]].play(curr_player)
+                        curr_player = hex.player
 
                         # TODO: refactor repetitive code
                         self.render_hexagrid(screen, hexagons, winner_group)
@@ -282,6 +291,10 @@ class HexagonGrid:
                                         # TODO
                                         if self.mode != 'pvp':  # if an agent is involved
                                             if hex.winner is None:
+                                                if curr_player == 1:
+                                                    model = model_1
+                                                else:
+                                                    model = model_2
                                                 action = model.predict(hex.board)
                                                 time.sleep(RANDOM_MODEL_DELAY_TIME)  # TODO
                                                 hex.play(action)
