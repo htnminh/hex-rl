@@ -38,8 +38,15 @@ class DQNModel():
         self.env = HexEnv(hex=Hex(size=size))
         check_env(self.env)
 
-        self.model = DQN("MlpPolicy", self.env, verbose=1, policy_kwargs={'features_extractor_class': CustomCNN})
-        if load_path is not None:
+        if load_path is None:
+            self.model = DQN("MlpPolicy",
+                            self.env,
+                            verbose=1,
+                            policy_kwargs={'features_extractor_class': CustomCNN},
+                            exploration_initial_eps=1.0,  # default 1.0
+                            exploration_fraction=0.02,  # default 0.1
+                            exploration_final_eps=0.8)
+        else:
             self.load(load_path)
 
         
@@ -168,15 +175,15 @@ if __name__ == "__main__":
 
     for size in range(5, 20, 2):
         dqn_model = DQNModel(size=size, load_path=None)
-        dqn_model.train(total_timesteps=10_000)
+        dqn_model.train(total_timesteps=1_000)  # 10_000
         dqn_model.save(f"model/dqn_easy_{size}")
 
     for size in range(5, 20, 2):
-        dqn_model = DQNModel(size=size, load_path=f"model/dqn_easy_{size}")
-        dqn_model.train(total_timesteps=30_000)
+        dqn_model = DQNModel(size=size, load_path=None)  # f"model/dqn_easy_{size}"
+        dqn_model.train(total_timesteps=3_000)  # 30_000
         dqn_model.save(f"model/dqn_medium_{size}")
 
     for size in range(5, 20, 2):
-        dqn_model = DQNModel(size=size, load_path=f"model/dqn_medium_{size}")
-        dqn_model.train(total_timesteps=100_000)
+        dqn_model = DQNModel(size=size, load_path=None)  # f"model/dqn_medium_{size}"
+        dqn_model.train(total_timesteps=10_000)  # 100_000
         dqn_model.save(f"model/dqn_hard_{size}")

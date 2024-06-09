@@ -208,13 +208,23 @@ class HexagonGrid:
 
         if self.agent_1 == "random":
             model_1 = RandomModel()
-        elif self.agent_1 == "dqn":
-            model_1 = DQNModel(size=self.size)  # TODO: load path
+        elif self.agent_1.startswith("dqn"):
+            if self.agent_1.endswith("easy"):
+                model_1 = DQNModel(size=self.size, load_path=f'model/dqn_easy_{self.size}')
+            elif self.agent_1.endswith("medium"):
+                model_1 = DQNModel(size=self.size, load_path=f'model/dqn_medium_{self.size}')
+            elif self.agent_1.endswith("hard"):
+                model_1 = DQNModel(size=self.size, load_path=f'model/dqn_hard_{self.size}')
 
         if self.agent_2 == "random":
             model_2 = RandomModel()
-        elif self.agent_2 == "dqn":
-            model_2 = DQNModel(size=self.size)
+        elif self.agent_2.startswith("dqn"):
+            if self.agent_2.endswith("easy"):
+                model_2 = DQNModel(size=self.size, load_path=f'model/dqn_easy_{self.size}')
+            elif self.agent_2.endswith("medium"):
+                model_2 = DQNModel(size=self.size, load_path=f'model/dqn_medium_{self.size}')
+            elif self.agent_2.endswith("hard"):
+                model_2 = DQNModel(size=self.size, load_path=f'model/dqn_hard_{self.size}')
 
         # agent_1 make the first move
         if self.mode[0] == "a":  # avp ava

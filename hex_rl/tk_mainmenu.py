@@ -60,19 +60,19 @@ for i, (text, mode) in enumerate(mode_values):
 b = Label(root, text="Agent", font=(None, 11))
 b.grid(row=10, column=0, columnspan=2, pady=5)
 
-agent_str_var_1 = StringVar(root, "random")
-agent_str_var_2 = StringVar(root, "random")
+agent_str_var_1 = StringVar(root, "dqn-medium")
+agent_str_var_2 = StringVar(root, "dqn-medium")
 values = [
     ("Random", "random"),
-    ("Deep Q-Learning", "dqn"),
-    ("Agent 3", "agent3"),
-    ("Agent 4", "agent4"),
-    ("Agent 5", "agent5"),
-    ("Agent 6", "agent6"),
-    ("Agent 7", "agent7"),
-    ("Agent 8", "agent8"),
-    ("Agent 9", "agent9"),
-    ("Agent 10", "agent10"),
+    ("Deep Q-Learning - Easy", "dqn-easy"),
+    ("Deep Q-Learning - Medium", "dqn-medium"),
+    ("Deep Q-Learning - Hard", "dqn-hard"),
+    # ("Agent 5", "agent5"),
+    # ("Agent 6", "agent6"),
+    # ("Agent 7", "agent7"),
+    # ("Agent 8", "agent8"),
+    # ("Agent 9", "agent9"),
+    # ("Agent 10", "agent10"),
 ]
 
 agent_radio_buttons_1 = []
