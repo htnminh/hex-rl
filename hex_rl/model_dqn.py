@@ -159,9 +159,24 @@ class HexEnv(gym.Env):
 if __name__ == "__main__":      
     dqn_model = DQNModel(size=5, load_path=None)
     dqn_model.train(total_timesteps=1_000)
-    dqn_model.save("dqn_test")
-    dqn_model.load("dqn_test")
+    dqn_model.save("model/dqn_test_5")
+    dqn_model.load("model/dqn_test_5")
 
     env = HexEnv(hex=Hex(size=5), dqn_model=dqn_model)
     env._run_an_episode()
 
+
+    for size in range(5, 20, 2):
+        dqn_model = DQNModel(size=size, load_path=None)
+        dqn_model.train(total_timesteps=1_000)
+        dqn_model.save(f"model/dqn_easy_{size}")
+
+    for size in range(5, 20, 2):
+        dqn_model = DQNModel(size=size, load_path=f"model/dqn_easy_{size}")
+        dqn_model.train(total_timesteps=10_000)
+        dqn_model.save(f"model/dqn_medium_{size}")
+
+    for size in range(5, 20, 2):
+        dqn_model = DQNModel(size=size, load_path=f"model/dqn_medium_{size}")
+        dqn_model.train(total_timesteps=100_000)
+        dqn_model.save(f"model/dqn_hard_{size}")
