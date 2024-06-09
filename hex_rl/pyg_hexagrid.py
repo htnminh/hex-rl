@@ -17,6 +17,7 @@ from pyg_button import Button, TextButton
 import pygame
 from pyg_hexagon import HexagonTile
 from model_random import RandomModel
+from model_dqn import DQNModel
 import time
 
 
@@ -207,9 +208,13 @@ class HexagonGrid:
         # TODO
         if self.agent_1 == "random":
             model_1 = RandomModel()
+        elif self.agent_1 == "dqn":
+            model_1 = DQNModel(size=self.size)  # TODO: load path
 
         if self.agent_2 == "random":
             model_2 = RandomModel()
+        elif self.agent_2 == "dqn":
+            model_2 = DQNModel(size=self.size)
 
         # TODO
         # agent_1 make the first move

@@ -16,12 +16,75 @@ from model_random import RandomModel
 
 
 
+class CustomCNN(BaseFeaturesExtractor):
+    def __init__(self, observation_space, features_dim=128):
+        super(CustomCNN, self).__init__(observation_space, features_dim)
+        # Example architecture
+        self.cnn = nn.Sequential(
+            nn.Conv2d(1, 16, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(),
+            nn.Flatten(),
+            nn.Linear(16 * observation_space.shape[1] * observation_space.shape[2], features_dim),
+            # nn.Linear(16 * 5 * 5, features_dim),
+            nn.ReLU()
+        )
+
+    def forward(self, observations):
+        return self.cnn(observations)
+
+
+class DQNModel():
+    def __init__(self, size=11, load_path: Optional[str]="dqn_hex") -> None:
+        self.env = HexEnv(hex=Hex(size=size))
+        check_env(self.env)
+
+        self.model = DQN("MlpPolicy", self.env, verbose=1, policy_kwargs={'features_extractor_class': CustomCNN})
+        if load_path is not None:
+            self.load(load_path)
+
+        
+    def train(self, total_timesteps=100_000) -> None:
+        self.model.learn(total_timesteps=total_timesteps)
+
+    def save(self, path="dqn_hex") -> None:
+        self.model.save(path)
+
+    def load(self, path="dqn_hex") -> None:
+        self.model = DQN.load(path)
+
+
+    def predict_q(self, obs):
+        obs_tensor = th.tensor([obs], dtype=th.float32)
+        q_values = self.model.q_net(obs_tensor).detach().numpy()
+        return q_values
+
+
+    def predict_action(self, obs):
+        q_values = self.predict_q(obs)[0]
+        # print("q_values\n", q_values)
+        indices = np.flip(np.argsort(q_values))
+        # print("indices\n", indices)
+        # print('sorted q_values\n', q_values[indices])
+        
+        for i in indices:
+            # print(i)
+            row, col = divmod(i, self.env.hex.size)
+            # print(row, col)
+            # print(obs[0, row, col])
+            if obs[0, row, col] == 0:
+                return i
+
+
+    def predict(self, board):
+        return divmod(self.predict_action(np.expand_dims(board, axis=0)), self.env.hex.size)
+    
+
 class HexEnv(gym.Env):
-    def __init__(self, hex: Hex, old_version: Optional[DQN] = None):
+    def __init__(self, hex: Hex, dqn_model: Optional[DQNModel] = None):
         """old_version: the old version of the model"""
         super(HexEnv, self).__init__()
         self.hex = hex
-        self.old_version = old_version
+        self.dqn_model = dqn_model
 
         self.action_space = spaces.Discrete(hex.size * hex.size)
         self.observation_space = spaces.Box(low=-1, high=1, shape=(1, hex.size, hex.size), dtype=int)
@@ -43,14 +106,13 @@ class HexEnv(gym.Env):
                 self.hex.inverse()
 
             if self.hex.winner is None:
-                if self.old_version is None:
+                if self.dqn_model is None:
                     RandomModel().predict(self.hex.board)
                     self.hex.play((row, col))
                     if inverse:
                         self.hex.inverse()
                 else:
-                    action = predict_action(np.expand_dims(self.hex.board, axis=0), self.old_version)
-                    row, col = divmod(action, self.hex.size)
+                    row, col = self.dqn_model.predict(self.hex.board)
                     self.hex.play((row, col))
                     if inverse:
                         self.hex.inverse()
@@ -74,87 +136,22 @@ class HexEnv(gym.Env):
         self.hex.rich_print()
 
 
+    def _run_an_episode(self):
+        obs, _ = self.reset()
+        while True:
+            action = self.dqn_model.predict_action(obs)
+            obs, _, done, _, _ = self.step(action, inverse=False)
+            self.render()
+            if done:
+                break
 
-class CustomCNN(BaseFeaturesExtractor):
-    def __init__(self, observation_space, features_dim=128):
-        super(CustomCNN, self).__init__(observation_space, features_dim)
-        # Example architecture
-        self.cnn = nn.Sequential(
-            nn.Conv2d(1, 16, kernel_size=3, stride=1, padding=1),
-            nn.ReLU(),
-            nn.Flatten(),
-            nn.Linear(16 * observation_space.shape[1] * observation_space.shape[2], features_dim),
-            # nn.Linear(16 * 5 * 5, features_dim),
-            nn.ReLU()
-        )
-
-    def forward(self, observations):
-        return self.cnn(observations)
-
-
-
-
-
-def predict_q(obs, model):
-    obs_tensor = th.tensor([obs], dtype=th.float32)
-    q_values = model.q_net(obs_tensor).detach().numpy()
-    return q_values
-
-
-def predict_action(obs, model):
-    q_values = predict_q(obs, model)[0]
-    # print("q_values\n", q_values)
-    indices = np.flip(np.argsort(q_values))
-    # print("indices\n", indices)
-    # print('sorted q_values\n', q_values[indices])
-    
-    for i in indices:
-        # print(i)
-        row, col = divmod(i, env.hex.size)
-        # print(row, col)
-        # print(obs[0, row, col])
-        if obs[0, row, col] == 0:
-            return i
 
 if __name__ == "__main__":      
-    # Create the environment
-    env = HexEnv(hex=Hex(size=5))
-    check_env(env)
+    dqn_model = DQNModel(size=5, load_path=None)
+    dqn_model.train(total_timesteps=1_000)
+    dqn_model.save("dqn_test")
+    dqn_model.load("dqn_test")
 
-    # Instantiate the PPO agent
-    # model = DQN("CnnPolicy", env, verbose=1)
-    model = DQN("MlpPolicy", env, verbose=1, policy_kwargs={'features_extractor_class': CustomCNN})
+    env = HexEnv(hex=Hex(size=5), dqn_model=dqn_model)
+    env._run_an_episode()
 
-    # Train the agent
-    # # model.learn(total_timesteps=1_000_000)
-    # model.learn(total_timesteps=100_000)
-
-    # # Save the model
-    # model.save("dqn_hex")
-
-    loaded_model = DQN.load("dqn_hex")
-    obs, _ = env.reset()
-
-
-    while True:
-        action = predict_action(obs, loaded_model)
-        obs, _, done, _, _ = env.step(action, inverse=False)
-        env.render()
-        if done:
-            break
-
-    # print(predict_q(obs, loaded_model))
-    # print(predict_action(obs, loaded_model))
-    # env.render()
-
-    # obs, _, _, _, _ = env.step(3)
-    # print(predict_q(obs, loaded_model))
-    # env.render()
-
-    # obs, _, _, _, _ = env.step(4)
-    # print(predict_q(obs, loaded_model))
-    # env.render()
-
-    # obs, _, _, _, _ = env.step(5)
-    # print(predict_q(obs, loaded_model))
-    # env.render()
