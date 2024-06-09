@@ -205,7 +205,7 @@ class HexagonGrid:
         hex = Hex(size=self.size, rich_exceptions=False)
         curr_player = hex.player
         winner_group = None
-        # TODO
+
         if self.agent_1 == "random":
             model_1 = RandomModel()
         elif self.agent_1 == "dqn":
@@ -216,7 +216,6 @@ class HexagonGrid:
         elif self.agent_2 == "dqn":
             model_2 = DQNModel(size=self.size)
 
-        # TODO
         # agent_1 make the first move
         if self.mode[0] == "a":  # avp ava
             action = model_1.predict(hex.board)
@@ -247,9 +246,10 @@ class HexagonGrid:
                     if hex.winner is None:
                         if curr_player == 1:
                             model = model_1
+                            action = model.predict(hex.board)
                         else:
                             model = model_2
-                        action = model.predict(hex.board)
+                            action = model.predict_inverse(hex.board)
                         time.sleep(RANDOM_MODEL_DELAY_TIME)
                         hex.play(action)
                         winner_group = hex.get_winner_group()
@@ -298,9 +298,10 @@ class HexagonGrid:
                                             if hex.winner is None:
                                                 if curr_player == 1:
                                                     model = model_1
+                                                    action = model.predict(hex.board)
                                                 else:
                                                     model = model_2
-                                                action = model.predict(hex.board)
+                                                    action = model.predict_inverse(hex.board)
                                                 time.sleep(RANDOM_MODEL_DELAY_TIME)  # TODO
                                                 hex.play(action)
                                                 winner_group = hex.get_winner_group()

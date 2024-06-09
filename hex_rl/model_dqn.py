@@ -25,9 +25,9 @@ class CustomCNN(BaseFeaturesExtractor):
             nn.ReLU(),
             nn.Flatten(),
             nn.Linear(16 * observation_space.shape[1] * observation_space.shape[2], features_dim),
-            # nn.Linear(16 * 5 * 5, features_dim),
             nn.ReLU()
         )
+
 
     def forward(self, observations):
         return self.cnn(observations)
@@ -46,8 +46,10 @@ class DQNModel():
     def train(self, total_timesteps=100_000) -> None:
         self.model.learn(total_timesteps=total_timesteps)
 
+
     def save(self, path="dqn_hex") -> None:
         self.model.save(path)
+
 
     def load(self, path="dqn_hex") -> None:
         self.model = DQN.load(path)
@@ -77,6 +79,15 @@ class DQNModel():
 
     def predict(self, board):
         return divmod(self.predict_action(np.expand_dims(board, axis=0)), self.env.hex.size)
+    
+
+    def predict_inverse(self, board):
+        hex = Hex(size=self.env.hex.size)
+        hex.board = board
+        hex.inverse()
+        row, col = divmod(self.predict_action(np.expand_dims(hex.board, axis=0)), self.env.hex.size)
+        row_inv, col_inv = self.env.hex.size - 1 - col, self.env.hex.size - 1 - row
+        return row_inv, col_inv
     
 
 class HexEnv(gym.Env):
@@ -109,13 +120,12 @@ class HexEnv(gym.Env):
                 if self.dqn_model is None:
                     RandomModel().predict(self.hex.board)
                     self.hex.play((row, col))
-                    if inverse:
-                        self.hex.inverse()
                 else:
                     row, col = self.dqn_model.predict(self.hex.board)
                     self.hex.play((row, col))
-                    if inverse:
-                        self.hex.inverse()
+
+                if inverse:
+                    self.hex.inverse()
 
             
         except InvalidActionError:  # Invalid move
