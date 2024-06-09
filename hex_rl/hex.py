@@ -67,6 +67,7 @@ class Hex:
         self.board = self.init_board()
         self.player = 1
         self.winner = None
+        self.inversed = False
 
         self._first_groups: list[set[tuple[int, int]]] = list()
         self._second_groups: list[set[tuple[int, int]]] = list()
@@ -173,14 +174,24 @@ class Hex:
     
 
     def check_winner(self) -> Optional[int]:
-        for group in self._first_groups:
-            if any(tup_action[0] == 0 for tup_action in group) and \
-                any(tup_action[0] == self.size - 1 for tup_action in group):
-                return 1
-        for group in self._second_groups:
-            if any(tup_action[1] == 0 for tup_action in group) and \
-                any(tup_action[1] == self.size - 1 for tup_action in group):
-                return -1
+        if not self.inversed:
+            for group in self._first_groups:
+                if any(tup_action[0] == 0 for tup_action in group) and \
+                    any(tup_action[0] == self.size - 1 for tup_action in group):
+                    return 1
+            for group in self._second_groups:
+                if any(tup_action[1] == 0 for tup_action in group) and \
+                    any(tup_action[1] == self.size - 1 for tup_action in group):
+                    return -1
+        else:
+            for group in self._first_groups:
+                if any(tup_action[1] == 0 for tup_action in group) and \
+                    any(tup_action[1] == self.size - 1 for tup_action in group):
+                    return 1
+            for group in self._second_groups:
+                if any(tup_action[0] == 0 for tup_action in group) and \
+                    any(tup_action[0] == self.size - 1 for tup_action in group):
+                    return -1
         return None
     
 
@@ -202,6 +213,7 @@ class Hex:
         self.board = np.rot90(np.transpose(self.board * -1), k=2)
         self.player *= -1
         self._first_groups, self._second_groups = self._second_groups, self._first_groups
+        self.inversed = not self.inversed
 
 
     @staticmethod
