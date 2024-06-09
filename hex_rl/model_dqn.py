@@ -118,10 +118,7 @@ class HexEnv(gym.Env):
 
             if self.hex.winner is None:
                 if self.dqn_model is None:
-                    row, col = RandomModel().predict(self.hex.board,
-                                                     info={
-                                                         'hex': self.hex,
-                                                     })  # TODO: why error?
+                    row, col = RandomModel().predict(self.hex.board, info={'hex': self.hex})
                     self.hex.play((row, col))
                 else:
                     row, col = self.dqn_model.predict(self.hex.board)
