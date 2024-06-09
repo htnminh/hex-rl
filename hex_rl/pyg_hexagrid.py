@@ -344,6 +344,6 @@ class HexagonGrid:
 
 
 if __name__ == "__main__":
-    HexagonGrid(mode='pva').main()
+    HexagonGrid(size=5, mode='pvp').main()
 
 

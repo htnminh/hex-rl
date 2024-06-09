@@ -196,23 +196,55 @@ class Hex:
     
 
     def get_winner_group(self) -> Optional[set[tuple[int, int]]]:
-        if self.winner == 1:
-            for group in self._first_groups:
-                if any(tup_action[0] == 0 for tup_action in group) and \
-                    any(tup_action[0] == self.size - 1 for tup_action in group):
-                    return group
-        elif self.winner == -1:
-            for group in self._second_groups:
-                if any(tup_action[1] == 0 for tup_action in group) and \
-                    any(tup_action[1] == self.size - 1 for tup_action in group):
-                    return group
+        if not self.inversed:
+            if self.winner == 1:
+                for group in self._first_groups:
+                    if any(tup_action[0] == 0 for tup_action in group) and \
+                        any(tup_action[0] == self.size - 1 for tup_action in group):
+                        return group
+            elif self.winner == -1:
+                for group in self._second_groups:
+                    if any(tup_action[1] == 0 for tup_action in group) and \
+                        any(tup_action[1] == self.size - 1 for tup_action in group):
+                        return group
+        else:
+            if self.winner == 1:
+                for group in self._first_groups:
+                    if any(tup_action[1] == 0 for tup_action in group) and \
+                        any(tup_action[1] == self.size - 1 for tup_action in group):
+                        return group
+            elif self.winner == -1:
+                for group in self._second_groups:
+                    if any(tup_action[0] == 0 for tup_action in group) and \
+                        any(tup_action[0] == self.size - 1 for tup_action in group):
+                        return group
         return None
     
 
     def inverse(self) -> None:
         self.board = np.rot90(np.transpose(self.board * -1), k=2)
         self.player *= -1
+
         self._first_groups, self._second_groups = self._second_groups, self._first_groups
+
+        _new_first_groups = list()
+        _new_second_groups = list()
+
+        for group in self._first_groups:
+            _new_group = set()
+            for tup in group:
+                _new_group.add((self.size - 1 - tup[1], self.size - 1 - tup[0]))
+            _new_first_groups.append(_new_group)
+
+        for group in self._second_groups:
+            _new_group = set()
+            for tup in group:
+                _new_group.add((self.size - 1 - tup[1], self.size - 1 - tup[0]))
+            _new_second_groups.append(_new_group)
+
+        self._first_groups = _new_first_groups
+        self._second_groups = _new_second_groups
+        
         self.inversed = not self.inversed
 
 
