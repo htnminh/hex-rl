@@ -31,9 +31,9 @@ class HexagonGrid:
     agent_2: Optional[str] = "random"
 
     radius = 25
-    colour = (220, 220, 220)
+    colour = (250, 250, 250)
     init_position = (50, 25)
-    screen_fill_colour = (220, 220, 220)
+    screen_fill_colour = (240, 240, 240)
     caption = 'Hex RL by @htnminh'
     color_edge_width = 2
     
@@ -182,7 +182,7 @@ class HexagonGrid:
     def init_info_text(self, text="Hex RL by @htnminh"):
         return TextButton(
             self.screen_size[0]/2, self.screen_size[1] - 90, text=text,
-            text_colour=(0, 0, 0), colour=(220, 220, 220)
+            text_colour=(0, 0, 0), colour=(240, 240, 240)
         )
 
     def render_info_text(self, screen, info_text):
