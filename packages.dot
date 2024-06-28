@@ -1,18 +1,18 @@
 digraph "packages" {
 rankdir=BT
 charset="utf-8"
-"hex_rl" [color="black", label=<hex_rl>, shape="box", style="solid"];
-"hex_rl.hex" [color="black", label=<hex_rl.hex>, shape="box", style="solid"];
-"hex_rl.hex_cli" [color="black", label=<hex_rl.hex_cli>, shape="box", style="solid"];
-"hex_rl.hex_cli_api" [color="black", label=<hex_rl.hex_cli_api>, shape="box", style="solid"];
-"hex_rl.model_dqn" [color="black", label=<hex_rl.model_dqn>, shape="box", style="solid"];
-"hex_rl.model_random" [color="black", label=<hex_rl.model_random>, shape="box", style="solid"];
-"hex_rl.pyg_button" [color="black", label=<hex_rl.pyg_button>, shape="box", style="solid"];
-"hex_rl.pyg_hexagon" [color="black", label=<hex_rl.pyg_hexagon>, shape="box", style="solid"];
-"hex_rl.pyg_hexagrid" [color="black", label=<hex_rl.pyg_hexagrid>, shape="box", style="solid"];
-"hex_rl.pyg_utils" [color="black", label=<hex_rl.pyg_utils>, shape="box", style="solid"];
-"hex_rl.tempCodeRunnerFile" [color="black", label=<hex_rl.tempCodeRunnerFile>, shape="box", style="solid"];
-"hex_rl.tk_mainmenu" [color="black", label=<hex_rl.tk_mainmenu>, shape="box", style="solid"];
+"hex_rl" [color="#77AADD", label=<hex_rl>, shape="box", style="filled"];
+"hex_rl.hex" [color="#77AADD", label=<hex_rl.hex>, shape="box", style="filled"];
+"hex_rl.hex_cli" [color="#77AADD", label=<hex_rl.hex_cli>, shape="box", style="filled"];
+"hex_rl.hex_cli_api" [color="#77AADD", label=<hex_rl.hex_cli_api>, shape="box", style="filled"];
+"hex_rl.model_dqn" [color="#77AADD", label=<hex_rl.model_dqn>, shape="box", style="filled"];
+"hex_rl.model_random" [color="#77AADD", label=<hex_rl.model_random>, shape="box", style="filled"];
+"hex_rl.pyg_button" [color="#77AADD", label=<hex_rl.pyg_button>, shape="box", style="filled"];
+"hex_rl.pyg_hexagon" [color="#77AADD", label=<hex_rl.pyg_hexagon>, shape="box", style="filled"];
+"hex_rl.pyg_hexagrid" [color="#77AADD", label=<hex_rl.pyg_hexagrid>, shape="box", style="filled"];
+"hex_rl.pyg_utils" [color="#77AADD", label=<hex_rl.pyg_utils>, shape="box", style="filled"];
+"hex_rl.tempCodeRunnerFile" [color="#77AADD", label=<hex_rl.tempCodeRunnerFile>, shape="box", style="filled"];
+"hex_rl.tk_mainmenu" [color="#77AADD", label=<hex_rl.tk_mainmenu>, shape="box", style="filled"];
 "hex_rl.hex_cli" -> "hex_rl.hex_cli_api" [arrowhead="open", arrowtail="none"];
 "hex_rl.hex_cli_api" -> "hex_rl.hex" [arrowhead="open", arrowtail="none"];
 "hex_rl.model_dqn" -> "hex_rl.hex" [arrowhead="open", arrowtail="none"];
