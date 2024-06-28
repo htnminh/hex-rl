@@ -12,7 +12,7 @@ class Button:
     # width: float = 50
     # height: float = 30
     text: str = ""
-    colour: Tuple[int, int, int] = (20, 100, 20)
+    colour: Tuple[int, int, int] = (20, 20, 200)
     highlight_offset: int = 5
     max_highlight_ticks: int = 10
     text_colour: Tuple[int, int, int] = (230, 230, 230)
