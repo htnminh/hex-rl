@@ -19,7 +19,6 @@ from model_random import RandomModel
 class CustomCNN(BaseFeaturesExtractor):
     def __init__(self, observation_space, features_dim=128):
         super(CustomCNN, self).__init__(observation_space, features_dim)
-        # Example architecture
         self.cnn = nn.Sequential(
             nn.Conv2d(1, 16, kernel_size=3, stride=1, padding=1),
             nn.ReLU(),
