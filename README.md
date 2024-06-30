@@ -1,8 +1,8 @@
 # Implementation of an End-to-End Reinforcement Learning Framework for Hex Strategy Optimization with Command-Line and Graphical User Interfaces
 
-Bachelor Thesis at Hanoi University of Science and Technology
+Bachelor Thesis at Hanoi University of Science and Technology by Hoang Tran Nhat Minh (20204883)
 
-Hoang Tran Nhat Minh - 20204883
+GitHub repository: [https://github.com/htnminh/hex-rl]()
 
 ## How to run
 
