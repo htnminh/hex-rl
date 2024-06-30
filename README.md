@@ -12,7 +12,7 @@ pip install -r requirements.txt
 ```
 
 Generate models (optional):
-> DQN models are provided in the [`model`](model) directory. However, if they are not available, they must be generated before playing against them (or spectate).
+> DQN models are provided in the [`model`](model) directory. However, if they are not available, they should be generated for the first time, or the only available "AI" is the random agent.
 ```bash
 python hex_rl/model_dqn.py
 ```
