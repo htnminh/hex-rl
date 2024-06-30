@@ -11,22 +11,23 @@ Install all dependencies:
 pip install -r requirements.txt
 ```
 
-### Generate models
+Generate models (optional):
+> DQN models are provided in the `models` directory. However, if they are not available, they must be generated before playing against them (or spectate).
+```bash
+python hex_rl/model_dqn.py
+```
 
-
-### GUI
 Play a Hex game:
 ```bash
 python hex_rl/tk_mainmenu.py
 ```
 
-### CLI
-Play a Hex game in PvP mode with board size 7x7:
+(CLI) Play a Hex game in PvP mode with board size 7x7:
 ```bash
 python hex_rl/hex_cli.py play pvp --size 7
 ```
 
-Show help command:
+(CLI) Show help message:
 ```bash
 python hex_rl/hex_cli.py --help
 ```
