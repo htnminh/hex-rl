@@ -248,6 +248,71 @@ class Hex:
         self.inversed = not self.inversed
 
 
+    def _get_shortest_path(self, group: set[tuple[int, int]],
+                          start: tuple[int, int], end: tuple[int, int],
+                          ) -> list[tuple[int, int]]:
+        # return the shortest path from start to end in the group
+        print(sorted(list(group)))
+        print(start, end)
+        assert start in group
+        assert end in group
+
+        min_length = None
+        min_path = None
+        for neighbor in self._get_neighbors(start):
+            if neighbor not in group:
+                continue
+
+            if neighbor == end:
+                return [start, end]
+            
+            shortest_path_from_neighbor = self._get_shortest_path(
+                group=group-{start}, start=neighbor, end=end)
+            if min_length is None or len(shortest_path_from_neighbor) < min_length:
+                min_length = 1 + len(shortest_path_from_neighbor)
+                min_path = [start] + shortest_path_from_neighbor
+
+        return min_path
+
+    
+    def get_shortest_group_path(self, group: set[tuple[int, int]], orientation: str
+                                 ) -> list[tuple[int, int]]:
+        # also considered a "winner group", however minimal
+        # orientation: 'v' for vertical |, 'h' for horizontal --
+        assert orientation in {'v', 'h'}
+        
+        if orientation == 'v':
+            starts = [tup for tup in group if tup[0] == 0]
+            ends = [tup for tup in group if tup[0] == self.size - 1]
+        else:
+            starts = [tup for tup in group if tup[1] == 0]
+            ends = [tup for tup in group if tup[1] == self.size - 1]
+        
+        min_length = None
+        min_path = None
+        for start in starts:
+            for end in ends:
+                shortest_path_start_end = self._get_shortest_path(group, start, end)
+                if min_length is None or len(shortest_path_start_end) < min_length:
+                    min_length = len(shortest_path_start_end)
+                    min_path = shortest_path_start_end
+
+        return min_path
+    
+
+    def get_shortest_winner_path(self):
+        if not self.inversed:
+            if self.winner == 1:
+                return self.get_shortest_group_path(self.get_winner_group(), 'v')
+            elif self.winner == -1:
+                return self.get_shortest_group_path(self.get_winner_group(), 'h')
+        else:
+            if self.winner == 1:
+                return self.get_shortest_group_path(self.get_winner_group(), 'h')
+            elif self.winner == -1:
+                return self.get_shortest_group_path(self.get_winner_group(), 'v')
+    
+
     @staticmethod
     def player_int_to_char(player: int) -> str:
         if player == 1:
@@ -414,5 +479,12 @@ if __name__ == "__main__":
 
     _hex.rich_print()
 
-    _hex.play((5, 5))   # TerminatedError: Game already ended, the winner is O
+    # _hex.play((5, 5))   # TerminatedError: Game already ended, the winner is O
+    path = _hex._get_shortest_path(
+        {(0, 0), (0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (0, 6), (0, 7), (0, 8), (0, 9), (0, 10)},
+        (0, 0), (0, 10))
+    print('Path')
+    print(path)
+    print('Length', len(path) - 1)
+
 
