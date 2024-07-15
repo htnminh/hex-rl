@@ -300,7 +300,7 @@ class Hex:
         return min_path
     
 
-    def get_shortest_winner_path(self):
+    def get_winner_shortest_path(self):
         if not self.inversed:
             if self.winner == 1:
                 return self.get_shortest_group_path(self.get_winner_group(), 'v')
