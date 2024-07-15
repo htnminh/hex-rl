@@ -230,7 +230,8 @@ class HexagonGrid:
         if self.mode[0] == "a":  # avp ava
             action = model_1.predict(hex.board)
             hex.play(action)
-            winner_group = hex.get_winner_group()
+            # winner_group = hex.get_winner_group()
+            winner_group = hex.get_winner_shortest_path()
             hexagons[action[0]][action[1]].play(curr_player)
             curr_player = hex.player
         
@@ -262,7 +263,8 @@ class HexagonGrid:
                             action = model.predict_inverse(hex.board)
                         time.sleep(RANDOM_MODEL_DELAY_TIME)
                         hex.play(action)
-                        winner_group = hex.get_winner_group()
+                        # winner_group = hex.get_winner_group()
+                        winner_group = hex.get_winner_shortest_path()
                         hexagons[action[0]][action[1]].play(curr_player)
                         curr_player = hex.player
 
@@ -291,7 +293,8 @@ class HexagonGrid:
                                         print(e)
                                         info_text = self.init_info_text(str(e))
                                     else:
-                                        winner_group = hex.get_winner_group()
+                                        # winner_group = hex.get_winner_group()
+                                        winner_group = hex.get_winner_shortest_path()
                                         hexagon.play(curr_player)
 
                                         # TODO: refactor repetitive code
@@ -314,7 +317,8 @@ class HexagonGrid:
                                                     action = model.predict_inverse(hex.board)
                                                 time.sleep(RANDOM_MODEL_DELAY_TIME)  # TODO
                                                 hex.play(action)
-                                                winner_group = hex.get_winner_group()
+                                                # winner_group = hex.get_winner_group()
+                                                winner_group = hex.get_winner_shortest_path()
                                                 hexagons[action[0]][action[1]].play(curr_player)
                                                 
                                                 # TODO: refactor repetitive code

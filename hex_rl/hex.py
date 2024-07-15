@@ -252,26 +252,33 @@ class Hex:
                           start: tuple[int, int], end: tuple[int, int],
                           ) -> list[tuple[int, int]]:
         # return the shortest path from start to end in the group
-        print(sorted(list(group)))
         print(start, end)
+        print(sorted(list(group)))
+        
         assert start in group
         assert end in group
 
+        if start == end:
+            print('return', [start])
+            return [start]
+        
         min_length = None
         min_path = None
         for neighbor in self._get_neighbors(start):
             if neighbor not in group:
                 continue
 
-            if neighbor == end:
-                return [start, end]
+            # if neighbor == end:
+            #     return [start, end]
             
             shortest_path_from_neighbor = self._get_shortest_path(
                 group=group-{start}, start=neighbor, end=end)
-            if min_length is None or len(shortest_path_from_neighbor) < min_length:
-                min_length = 1 + len(shortest_path_from_neighbor)
-                min_path = [start] + shortest_path_from_neighbor
+            if shortest_path_from_neighbor is not None:
+                if min_length is None or len(shortest_path_from_neighbor) < min_length:
+                    min_length = 1 + len(shortest_path_from_neighbor)
+                    min_path = [start] + shortest_path_from_neighbor
 
+        print('return', min_path)
         return min_path
 
     
@@ -481,8 +488,8 @@ if __name__ == "__main__":
 
     # _hex.play((5, 5))   # TerminatedError: Game already ended, the winner is O
     path = _hex._get_shortest_path(
-        {(0, 0), (0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (0, 6), (0, 7), (0, 8), (0, 9), (0, 10)},
-        (0, 0), (0, 10))
+        {(0, 0), (0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (1, 0)},
+        (0, 0), (0, 5))
     print('Path')
     print(path)
     print('Length', len(path) - 1)
